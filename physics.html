@@ -33,6 +33,11 @@
   .lw-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
   .balance-msg{font-family:'Fredoka One',cursive;font-size:1.2rem;text-align:center;margin:10px 0;min-height:32px;transition:color .3s}
   .rainbow-canvas{display:block;max-width:100%;border-radius:12px}
+  @keyframes waveRing{0%{transform:translate(-50%,-50%) scale(1);opacity:.85}100%{transform:translate(-50%,-50%) scale(5.8);opacity:0}}
+  .surface-btn{background:#F3F4F6;color:#374151;border:2px solid transparent;transition:all .2s}
+  .surface-btn.active{background:#F59E0B;color:#fff;border-color:#D97706}
+  .hunt-item{cursor:pointer;padding:12px 10px;background:#F3F4F6;border-radius:12px;text-align:center;min-width:80px;border:3px solid transparent;transition:all .2s;user-select:none}
+  .hunt-item:hover{transform:scale(1.06)}
 </style>
 </head>
 <body>
@@ -193,6 +198,194 @@
     </div>
   </div>
 
+
+  <!-- ══ ACTIVITY 4: FRICTION RACE ══ -->
+  <div class="activity-card">
+    <div class="act-header physics-hdr">
+      <span class="act-num">4</span>
+      Friction Race! 🚗
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Friction is a force that slows things down when two surfaces rub together. Pick a surface and roll the car — which one creates the most friction and stops the car fastest?</p>
+
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0">
+        <button class="btn btn-sm surface-btn" onclick="pickSurface('ice',this)">🧊 Ice</button>
+        <button class="btn btn-sm surface-btn" onclick="pickSurface('wood',this)">🪵 Hardwood</button>
+        <button class="btn btn-sm surface-btn" onclick="pickSurface('carpet',this)">🟫 Carpet</button>
+      </div>
+
+      <div id="frictionTrack" style="display:none;position:relative;height:72px;border-radius:12px;margin:10px 0;overflow:hidden">
+        <div id="frictionCar" style="position:absolute;left:4%;top:50%;transform:translateY(-50%);font-size:2.2rem">🚗</div>
+        <div id="surfaceLabel" style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.45);white-space:nowrap"></div>
+      </div>
+
+      <div style="text-align:center;margin:10px 0">
+        <button class="btn btn-physics" id="rollBtn" onclick="rollCar()" disabled>Roll! 🚗💨</button>
+        <button class="btn btn-sm" style="background:#E5E7EB;color:#374151;margin-left:8px" onclick="resetFriction()">Reset 🔄</button>
+      </div>
+
+      <div id="frictionResult" class="result-box"></div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>🛑 Friction is Your Friend!</h4>
+        <p>Without friction you couldn't walk — your shoes would just slide! Car brakes, bicycle brakes, and even pencils writing on paper all need friction. Smooth surfaces like ice have very little friction, while rough surfaces like carpet have lots. That's why roads are made bumpy!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 5: ENERGY COASTER ══ -->
+  <div class="activity-card">
+    <div class="act-header physics-hdr">
+      <span class="act-num">5</span>
+      Energy Coaster ⛷️
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Energy never disappears — it just changes form! A ball high up has POTENTIAL energy (stored). As it rolls down, that becomes KINETIC energy (moving). Watch the bars change!</p>
+
+      <div id="hillScene" style="position:relative;height:160px;border-radius:12px;overflow:hidden;background:#87CEEB;margin:14px 0">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:35px;background:#5D8A3C;border-radius:0 0 12px 12px"></div>
+        <div style="position:absolute;bottom:35px;left:0;width:55%;height:90px;background:#5D8A3C;clip-path:polygon(0 100%,0 0,100% 100%)"></div>
+        <div id="coasterBall" style="position:absolute;font-size:2rem;left:2%;top:20px;transition:left 1.8s ease-in,top 1.8s ease-in">⚽</div>
+        <div style="position:absolute;top:10px;left:8px;font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)">HIGH UP<br>📦 Full PE</div>
+        <div style="position:absolute;bottom:42px;right:10px;font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)">BOTTOM<br>💨 Full KE</div>
+      </div>
+
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin:10px 0">
+        <div style="flex:1;min-width:150px">
+          <div style="font-size:.82rem;font-weight:800;color:#6366F1;margin-bottom:5px">🏔️ Potential Energy (stored)</div>
+          <div style="background:#E5E7EB;border-radius:8px;height:18px;overflow:hidden">
+            <div id="peBar" style="height:100%;width:100%;background:linear-gradient(90deg,#6366F1,#A78BFA);border-radius:8px;transition:width 1.8s ease-in"></div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:150px">
+          <div style="font-size:.82rem;font-weight:800;color:#F59E0B;margin-bottom:5px">💨 Kinetic Energy (moving)</div>
+          <div style="background:#E5E7EB;border-radius:8px;height:18px;overflow:hidden">
+            <div id="keBar" style="height:100%;width:0%;background:linear-gradient(90deg,#F59E0B,#FBBF24);border-radius:8px;transition:width 1.8s ease-in"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin:10px 0">
+        <button class="btn btn-physics" id="rollCoasterBtn" onclick="rollCoaster()">Roll Down! ⛷️</button>
+        <button class="btn btn-sm" style="background:#E5E7EB;color:#374151;margin-left:8px" onclick="resetCoaster()">Reset 🔄</button>
+      </div>
+
+      <div id="coasterResult" class="result-box"></div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>🎢 Roller Coasters Use This!</h4>
+        <p>Real roller coasters start at a tall hill to load up on potential energy. As the coaster drops, all that stored energy turns into speed! That's why the biggest drop makes you go fastest. Elastic energy is similar — stretch a rubber band to store energy, then let go and release it all at once!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 6: REFRACTION LAB ══ -->
+  <div class="activity-card">
+    <div class="act-header physics-hdr">
+      <span class="act-num">6</span>
+      Refraction Lab 🔬
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Light bends when it moves from air into water! This is called REFRACTION. It makes objects look broken or shifted at the water line — even though they aren't!</p>
+
+      <div style="display:flex;gap:24px;justify-content:center;align-items:flex-start;flex-wrap:wrap;margin:14px 0">
+        <div style="text-align:center">
+          <div style="font-size:.8rem;font-weight:800;color:#6B7280;margin-bottom:8px">No Water 🌬️</div>
+          <div style="position:relative;width:90px;height:170px;margin:0 auto">
+            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:2.2rem;line-height:1">✏️</div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:95px;border:3px solid #9CA3AF;border-radius:4px 4px 12px 12px;background:rgba(200,220,255,.1)"></div>
+          </div>
+          <div style="font-size:.74rem;color:#6B7280;margin-top:6px">Pencil looks straight</div>
+        </div>
+
+        <div style="text-align:center">
+          <div style="font-size:.8rem;font-weight:800;color:#0284C7;margin-bottom:8px">With Water 💧</div>
+          <div style="position:relative;width:90px;height:170px;margin:0 auto">
+            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:2.2rem;line-height:1">✏️</div>
+            <div style="position:absolute;top:72px;left:calc(50% + 14px);transform:translateX(-50%);font-size:1.7rem;opacity:.85;line-height:1">🖊️</div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:95px;border:3px solid #0284C7;border-radius:4px 4px 12px 12px;background:rgba(100,180,255,.32)"></div>
+          </div>
+          <div style="font-size:.74rem;color:#0284C7;margin-top:6px">Pencil looks BENT! 😲</div>
+        </div>
+      </div>
+
+      <div style="background:#F3F4F6;border-radius:12px;padding:16px;margin-top:8px">
+        <p style="font-weight:700;font-size:.95rem;margin-bottom:10px">Quiz! Why does the pencil look bent in water?</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+          <button class="btn btn-sm" onclick="checkRefraction('broken',this)">The pencil breaks in water</button>
+          <button class="btn btn-sm btn-physics" onclick="checkRefraction('bends',this)">Light bends entering water</button>
+          <button class="btn btn-sm" onclick="checkRefraction('magic',this)">Water has magic powers</button>
+        </div>
+        <div id="refractionResult" class="result-box"></div>
+      </div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>🌈 Refraction Creates Rainbows!</h4>
+        <p>When sunlight passes through a raindrop it bends and splits into all the colors — red, orange, yellow, green, blue, and violet! Each color bends a slightly different amount, spreading them into a rainbow arc. Refraction is also how your eyes' lenses focus light so you can see clearly!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 7: SOUND WAVES ══ -->
+  <div class="activity-card">
+    <div class="act-header physics-hdr">
+      <span class="act-num">7</span>
+      Sound Waves 🔔
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Sound is really just vibrations in the air! When something shakes back and forth very fast it creates invisible waves that travel to your ears. Click the bell and watch sound waves spread out!</p>
+
+      <div id="soundScene" style="text-align:center;position:relative;height:180px;background:linear-gradient(135deg,#F0F9FF,#E0F2FE);border-radius:12px;overflow:hidden;margin:14px 0">
+        <div id="soundBell" style="font-size:3.5rem;cursor:pointer;position:absolute;left:50%;top:28px;transform:translateX(-50%);user-select:none;transition:transform .1s" onclick="ringBell()">🔔</div>
+      </div>
+
+      <div style="text-align:center;margin-bottom:8px">
+        <button class="btn btn-physics" onclick="ringBell()">Ring the Bell! 🔔</button>
+      </div>
+      <p id="soundTip" style="text-align:center;font-size:.88rem;color:#6B7280;margin-bottom:10px">Click the bell or button to see sound waves!</p>
+
+      <div style="background:#F3F4F6;border-radius:12px;padding:16px;margin-top:6px">
+        <p style="font-weight:700;font-size:.95rem;margin-bottom:10px">Quiz! What creates sound?</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+          <button class="btn btn-sm" onclick="checkSound('heat',this)">Heat from the sun</button>
+          <button class="btn btn-sm btn-physics" onclick="checkSound('vibrations',this)">Vibrations (shaking)</button>
+          <button class="btn btn-sm" onclick="checkSound('color',this)">Color of an object</button>
+        </div>
+        <div id="soundResult" class="result-box"></div>
+      </div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>🗣️ Your Voice is Vibrations!</h4>
+        <p>Put your fingers gently on your throat and hum — can you feel the buzzing? Those are your vocal cords vibrating! Sound travels through solids, liquids, and gases. In a deep canyon, sound waves bounce off the far wall and come back as an echo — the wider the canyon, the longer the delay! In space there's no air, so it's completely silent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 8: MAGNETIC SCAVENGER HUNT ══ -->
+  <div class="activity-card">
+    <div class="act-header physics-hdr">
+      <span class="act-num">8</span>
+      Magnetic Scavenger Hunt 🧲
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Not all metals are magnetic — only iron and steel are attracted to magnets! Click the magnet on each object to test it. Can you find all the magnetic items?</p>
+
+      <div id="huntGrid" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:14px 0"></div>
+
+      <div style="text-align:center;margin:10px 0">
+        <div id="huntScore" style="font-family:'Fredoka One',cursive;font-size:1.05rem;color:#6B7280;margin-bottom:8px">Test each object with the magnet! 🧲</div>
+        <button class="btn btn-sm" style="background:#E5E7EB;color:#374151" onclick="resetHunt()">Reset 🔄</button>
+      </div>
+
+      <div id="huntResult" class="result-box"></div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>🔩 Which Metals Are Magnetic?</h4>
+        <p>Only iron, nickel, and cobalt are naturally magnetic. Steel (which is mostly iron) is also magnetic — that's why fridge magnets stick! Gold, silver, aluminum, and copper are NOT magnetic. Next time you're in the kitchen, test your spoons and pots with a fridge magnet to see what's steel and what isn't!</p>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <footer class="main-footer">🌟 Keep Learning, Keep Growing! Made with ❤️ for curious kids everywhere 🌍</footer>
@@ -343,6 +536,210 @@ function updateLever(){
   }
 }
 function var_mid(){ return '#6B7280'; }
+
+// ── FRICTION RACE ──
+const frictionSurfaces = {
+  ice:    { emoji:'🧊', name:'Ice',      dist:88, dur:2.8, bg:'#B8E0F7', desc:'Ice is super smooth — very low friction! The car zoomed almost all the way across!' },
+  wood:   { emoji:'🪵', name:'Hardwood', dist:56, dur:2.0, bg:'#D4A574', desc:'Wood has medium friction. The car slowed down partway across.' },
+  carpet: { emoji:'🟫', name:'Carpet',   dist:20, dur:1.1, bg:'#A0785A', desc:'Carpet is rough — lots of friction! The car stopped quickly!' }
+};
+let selSurface=null, frictionRolled=false, frictionTried=new Set();
+
+function pickSurface(id, btn){
+  document.querySelectorAll('.surface-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selSurface=id;
+  const s=frictionSurfaces[id];
+  const track=document.getElementById('frictionTrack');
+  track.style.display='block';
+  track.style.background=s.bg;
+  document.getElementById('surfaceLabel').textContent=s.emoji+' '+s.name+' surface';
+  const car=document.getElementById('frictionCar');
+  car.style.transition='none';
+  car.style.left='4%';
+  document.getElementById('frictionResult').className='result-box';
+  document.getElementById('rollBtn').disabled=false;
+  frictionRolled=false;
+}
+
+function rollCar(){
+  if(!selSurface||frictionRolled) return;
+  frictionRolled=true;
+  document.getElementById('rollBtn').disabled=true;
+  const s=frictionSurfaces[selSurface];
+  const car=document.getElementById('frictionCar');
+  car.style.transition='left '+s.dur+'s ease-out';
+  car.style.left=s.dist+'%';
+  frictionTried.add(selSurface);
+  setTimeout(()=>{
+    const res=document.getElementById('frictionResult');
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">${s.emoji}</span><span class="r-txt">${s.desc}</span>`;
+    if(frictionTried.size>=3){ addStars(3,'physics'); beep('win'); confetti(); }
+    else { addStars(1,'physics'); beep('correct'); }
+  }, s.dur*1000+100);
+}
+
+function resetFriction(){
+  selSurface=null; frictionRolled=false;
+  document.querySelectorAll('.surface-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('frictionTrack').style.display='none';
+  document.getElementById('frictionResult').className='result-box';
+  document.getElementById('rollBtn').disabled=true;
+}
+
+// ── ENERGY COASTER ──
+let coasterRolled=false, coasterStarGiven=false;
+
+function rollCoaster(){
+  if(coasterRolled) return;
+  coasterRolled=true;
+  document.getElementById('rollCoasterBtn').disabled=true;
+  const ball=document.getElementById('coasterBall');
+  ball.style.left='72%';
+  ball.style.top='108px';
+  document.getElementById('peBar').style.width='0%';
+  document.getElementById('keBar').style.width='100%';
+  setTimeout(()=>{
+    const res=document.getElementById('coasterResult');
+    res.className='result-box show ok';
+    res.innerHTML='<span class="r-emoji">⚡</span><span class="r-txt">Potential energy → Kinetic energy! At the top it was all stored. At the bottom it\'s all motion! The total energy stayed the same — it just changed form!</span>';
+    if(!coasterStarGiven){ coasterStarGiven=true; addStars(2,'physics'); beep('win'); confetti(); }
+  }, 2100);
+}
+
+function resetCoaster(){
+  coasterRolled=false;
+  document.getElementById('rollCoasterBtn').disabled=false;
+  const ball=document.getElementById('coasterBall');
+  const pe=document.getElementById('peBar');
+  const ke=document.getElementById('keBar');
+  ball.style.transition='none'; pe.style.transition='none'; ke.style.transition='none';
+  ball.style.left='2%'; ball.style.top='20px';
+  pe.style.width='100%'; ke.style.width='0%';
+  document.getElementById('coasterResult').className='result-box';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    ball.style.transition='left 1.8s ease-in,top 1.8s ease-in';
+    pe.style.transition='width 1.8s ease-in';
+    ke.style.transition='width 1.8s ease-in';
+  }));
+}
+
+// ── REFRACTION ──
+let refractionStarGiven=false;
+function checkRefraction(ans, btn){
+  document.querySelectorAll('[onclick^="checkRefraction"]').forEach(b=>b.disabled=true);
+  const res=document.getElementById('refractionResult');
+  if(ans==='bends'){
+    btn.style.outline='3px solid #34D399';
+    res.className='result-box show ok';
+    res.innerHTML='<span class="r-emoji">✅</span><span class="r-txt">Correct! Light slows down when it enters water and changes direction — that\'s refraction! The pencil isn\'t actually bent; it just LOOKS bent to your eyes!</span>';
+    if(!refractionStarGiven){ refractionStarGiven=true; addStars(2,'physics'); beep('win'); confetti(); }
+  } else {
+    btn.style.outline='3px solid #FF6B6B';
+    res.className='result-box show err';
+    res.innerHTML='<span class="r-emoji">❌</span><span class="r-txt">Not quite! Light bends (refracts) when it moves from water to air, making the pencil look bent even though it\'s perfectly straight!</span>';
+    beep('wrong');
+    setTimeout(()=>document.querySelectorAll('[onclick^="checkRefraction"]').forEach(b=>b.disabled=false), 700);
+  }
+}
+
+// ── SOUND WAVES ──
+let soundStarGiven=false, bellRinging=false;
+function ringBell(){
+  if(bellRinging) return;
+  bellRinging=true;
+  const bell=document.getElementById('soundBell');
+  const scene=document.getElementById('soundScene');
+  beep('correct');
+  bell.style.transform='translateX(-50%) rotate(22deg)';
+  setTimeout(()=>bell.style.transform='translateX(-50%) rotate(-22deg)', 110);
+  setTimeout(()=>bell.style.transform='translateX(-50%) rotate(10deg)', 220);
+  setTimeout(()=>bell.style.transform='translateX(-50%) rotate(0deg)', 330);
+  for(let i=0;i<4;i++){
+    setTimeout(()=>{
+      const ring=document.createElement('div');
+      ring.style.cssText='position:absolute;left:50%;top:68px;width:40px;height:40px;border:3px solid #F59E0B;border-radius:50%;pointer-events:none;animation:waveRing 1.5s ease-out forwards';
+      scene.appendChild(ring);
+      setTimeout(()=>ring.remove(), 1600);
+    }, i*280);
+  }
+  document.getElementById('soundTip').textContent='The bell vibrates and pushes air molecules in waves that travel to your ears! 👂';
+  setTimeout(()=>bellRinging=false, 1500);
+}
+
+function checkSound(ans, btn){
+  document.querySelectorAll('[onclick^="checkSound"]').forEach(b=>b.disabled=true);
+  const res=document.getElementById('soundResult');
+  if(ans==='vibrations'){
+    btn.style.outline='3px solid #34D399';
+    res.className='result-box show ok';
+    res.innerHTML='<span class="r-emoji">✅</span><span class="r-txt">Correct! All sound is caused by vibrations — things shaking back and forth very fast. The bell shakes, which pushes air, which creates waves that travel to your ears!</span>';
+    if(!soundStarGiven){ soundStarGiven=true; addStars(2,'physics'); beep('win'); confetti(); }
+  } else {
+    btn.style.outline='3px solid #FF6B6B';
+    res.className='result-box show err';
+    res.innerHTML='<span class="r-emoji">❌</span><span class="r-txt">Try again! Sound is all about vibrations — things shaking back and forth. Ring the bell above and watch the waves spread!</span>';
+    beep('wrong');
+    setTimeout(()=>document.querySelectorAll('[onclick^="checkSound"]').forEach(b=>b.disabled=false), 700);
+  }
+}
+
+// ── MAGNETIC SCAVENGER HUNT ──
+const huntItems=[
+  {emoji:'📎',name:'Paperclip', magnetic:true},
+  {emoji:'🍎',name:'Apple',     magnetic:false},
+  {emoji:'🔩',name:'Screw',     magnetic:true},
+  {emoji:'🪵',name:'Wood',      magnetic:false},
+  {emoji:'🔑',name:'Key',       magnetic:true},
+  {emoji:'🧴',name:'Plastic',   magnetic:false},
+  {emoji:'🪛',name:'Screwdriver',magnetic:true},
+  {emoji:'🍋',name:'Lemon',     magnetic:false},
+];
+let huntTested=new Set(), huntStarGiven=false;
+
+function renderHunt(){
+  document.getElementById('huntGrid').innerHTML=huntItems.map((item,i)=>`
+    <div class="hunt-item" id="hi-${i}" onclick="testMagnet(${i})">
+      <div style="font-size:2rem">${item.emoji}</div>
+      <div style="font-size:.7rem;font-weight:800;margin-top:4px">${item.name}</div>
+      <div style="font-size:1.1rem;margin-top:4px;min-height:22px" id="hr-${i}"></div>
+    </div>`).join('');
+}
+
+function testMagnet(i){
+  if(huntTested.has(i)) return;
+  huntTested.add(i);
+  const item=huntItems[i];
+  const el=document.getElementById('hi-'+i);
+  const rEl=document.getElementById('hr-'+i);
+  beep(item.magnetic?'correct':'pop');
+  if(item.magnetic){
+    el.style.borderColor='#34D399'; el.style.background='#D1FAE5';
+    rEl.textContent='🧲✅';
+  } else {
+    el.style.borderColor='#F59E0B'; el.style.background='#FEF3C7';
+    rEl.textContent='🚫';
+  }
+  const tested=huntTested.size, total=huntItems.length;
+  const found=[...huntTested].filter(idx=>huntItems[idx].magnetic).length;
+  document.getElementById('huntScore').textContent=`Tested: ${tested}/${total} · Found ${found} magnetic items!`;
+  if(tested===total){
+    const res=document.getElementById('huntResult');
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">🧲</span><span class="r-txt">Amazing! You found all ${found} magnetic items! Iron and steel objects are magnetic — wood, plastic, and food are NOT!</span>`;
+    if(!huntStarGiven){ huntStarGiven=true; addStars(3,'physics'); beep('win'); confetti(); }
+  }
+}
+
+function resetHunt(){
+  huntTested.clear();
+  document.getElementById('huntScore').textContent='Test each object with the magnet! 🧲';
+  document.getElementById('huntResult').className='result-box';
+  renderHunt();
+}
+
+renderHunt();
 </script>
 </body>
 </html>

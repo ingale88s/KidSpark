@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KidSpark ⚡ – Learn Science &amp; Math!</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-stars" id="bgStars"></div>
+
+<header class="main-header">
+  <div class="header-content">
+    <span class="mascot-icon">🤖</span>
+    <div>
+      <div class="header-title">KidSpark! ⚡</div>
+      <div class="header-sub">Where Learning is a BLAST! 🚀</div>
+    </div>
+    <div class="stars-pill">⭐ <span id="totalStars">0</span> Stars</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="floaters">
+    <span>🧪</span><span>🔭</span><span>🧮</span><span>🧬</span><span>💡</span>
+  </div>
+  <h2>Hi there, Super Scientist! 👋</h2>
+  <p>Ready to explore amazing experiments and solve cool puzzles?<br>Pick a subject below and let's start learning!</p>
+</section>
+
+<section class="subjects">
+  <h2>Choose Your Adventure! 🌟</h2>
+  <div class="subject-grid">
+
+    <a href="math.html" class="subject-card math-card">
+      <span class="card-icon">🔢</span>
+      <h3>Math Magic</h3>
+      <p>Count, add, spot patterns and become a number ninja!</p>
+      <span class="card-badge">7 Activities</span>
+    </a>
+
+    <a href="science.html" class="subject-card science-card">
+      <span class="card-icon">🔬</span>
+      <h3>Science Lab</h3>
+      <p>Make volcanoes erupt and grow virtual plants!</p>
+      <span class="card-badge">3 Experiments</span>
+    </a>
+
+    <a href="chemistry.html" class="subject-card chemistry-card">
+      <span class="card-icon">🧪</span>
+      <h3>Chemistry Zone</h3>
+      <p>Mix colors, freeze water, and test acids &amp; bases!</p>
+      <span class="card-badge">3 Labs</span>
+    </a>
+
+    <a href="physics.html" class="subject-card physics-card">
+      <span class="card-icon">⚡</span>
+      <h3>Physics Fun</h3>
+      <p>Drop things, play with magnets, and balance levers!</p>
+      <span class="card-badge">3 Experiments</span>
+    </a>
+
+    <a href="logic.html" class="subject-card logic-card">
+      <span class="card-icon">🧩</span>
+      <h3>Logic Land</h3>
+      <p>Memory games, pattern puzzles, and brain teasers!</p>
+      <span class="card-badge">7 Games</span>
+    </a>
+
+  </div>
+</section>
+
+<section class="fun-facts">
+  <div class="fact-ticker">
+    <span class="ticker-label">🌟 Did You Know?</span>
+    <div class="ticker-content" id="tickerText">Loading amazing facts…</div>
+  </div>
+</section>
+
+<section class="progress-section">
+  <h2>Your Learning Journey 🗺️</h2>
+  <div class="progress-grid">
+
+    <div class="progress-item">
+      <span class="progress-emoji">🔢</span>
+      <div class="progress-bar-wrap"><div class="progress-bar math-bar" id="mathBar" style="width:0%"></div></div>
+      <span id="mathLbl">0%</span>
+    </div>
+
+    <div class="progress-item">
+      <span class="progress-emoji">🔬</span>
+      <div class="progress-bar-wrap"><div class="progress-bar science-bar" id="scienceBar" style="width:0%"></div></div>
+      <span id="scienceLbl">0%</span>
+    </div>
+
+    <div class="progress-item">
+      <span class="progress-emoji">🧪</span>
+      <div class="progress-bar-wrap"><div class="progress-bar chemistry-bar" id="chemistryBar" style="width:0%"></div></div>
+      <span id="chemistryLbl">0%</span>
+    </div>
+
+    <div class="progress-item">
+      <span class="progress-emoji">⚡</span>
+      <div class="progress-bar-wrap"><div class="progress-bar physics-bar" id="physicsBar" style="width:0%"></div></div>
+      <span id="physicsLbl">0%</span>
+    </div>
+
+    <div class="progress-item">
+      <span class="progress-emoji">🧩</span>
+      <div class="progress-bar-wrap"><div class="progress-bar logic-bar" id="logicBar" style="width:0%"></div></div>
+      <span id="logicLbl">0%</span>
+    </div>
+
+  </div>
+</section>
+
+<footer class="main-footer">
+  🌟 Keep Learning, Keep Growing! Made with ❤️ for curious kids everywhere 🌍
+</footer>
+
+<script src="app.js"></script>
+<script>
+  loadProgress();
+
+  const facts = [
+    "⚡ Lightning strikes Earth about 100 times every SECOND!",
+    "🌙 The Moon is slowly moving away from Earth — about 3.8 cm per year!",
+    "🦋 Butterflies taste food with their FEET!",
+    "🌊 About 71% of the Earth's surface is covered by water!",
+    "🐘 Elephants are the only animals that cannot jump!",
+    "🔢 Zero is the only number you cannot write in Roman numerals!",
+    "🌈 Rainbows are actually full circles — we only see half from the ground!",
+    "🧲 The Earth itself is one giant magnet!",
+    "🌡️ Hot water can freeze faster than cold water — it's called the Mpemba effect!",
+    "🦷 Tooth enamel is the hardest substance in your entire body!",
+    "🪐 Saturn is so light it could float on water (if there was a big enough ocean)!",
+    "🐝 Bees can recognize human faces — just like we do!",
+    "🍎 Apples float in water because they are 25% air!",
+    "🌿 A single tree can absorb up to 22 kg of carbon dioxide per year!",
+  ];
+
+  let fi = 0;
+  const tick = document.getElementById('tickerText');
+  function nextFact() {
+    tick.style.opacity = '0';
+    setTimeout(() => { tick.textContent = facts[fi++ % facts.length]; tick.style.opacity = '1'; }, 400);
+  }
+  nextFact();
+  setInterval(nextFact, 5000);
+</script>
+</body>
+</html>

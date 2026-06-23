@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Physics Fun ⚡ – KidSpark</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .obj-picker{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+  .obj-btn{padding:12px 16px;border-radius:var(--r-sm);font-size:1.5rem;background:#F3F4F6;border:3px solid transparent;cursor:pointer;transition:all .2s;text-align:center;min-width:80px}
+  .obj-btn:hover{transform:scale(1.06)}
+  .obj-btn.selected{border-color:#F59E0B;background:#FEF3C7}
+  .obj-btn .obj-name{font-size:.7rem;font-weight:800;display:block;margin-top:4px}
+  .drop-sky{background:linear-gradient(to bottom,#87CEEB 0%,#B0E0FF 65%,#228B22 65%,#228B22 72%,#8B4513 72%,#8B4513 100%)}
+  .falling-obj{position:absolute;font-size:2.4rem;top:10%;transition:top var(--fall-dur,0.8s) cubic-bezier(.33,0,.66,1);left:50%;transform:translateX(-50%)}
+  .falling-obj.landed{top:55%!important}
+  /* magnets */
+  .mag-wrap{display:flex;align-items:center;justify-content:center;gap:var(--mgap,60px);height:130px;transition:gap .7s ease;margin:16px 0}
+  .mag-body{display:flex;flex-direction:column;font-size:2.4rem;user-select:none;align-items:center;transition:all .7s}
+  .pole-label{font-size:.75rem;font-weight:900;letter-spacing:.05em;padding:2px 6px;border-radius:4px;color:#fff;display:inline-block}
+  .north-pole{background:#DC2626}
+  .south-pole{background:#1D4ED8}
+  .mag-arrow{font-size:1.5rem;opacity:0;transition:opacity .4s}
+  /* lever */
+  .lever-wrap{display:flex;flex-direction:column;align-items:center;gap:0;margin:10px 0}
+  .lever-beam{width:280px;height:14px;background:linear-gradient(#A0522D,#6B3A2A);border-radius:7px;transform-origin:50% 50%;transition:transform .4s ease;position:relative}
+  .beam-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;background:#FFD700;border-radius:50%;border:2px solid #B8860B}
+  .tri{width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-bottom:0;border-top:36px solid #6B7280;margin:0 auto}
+  .base-line{width:280px;height:6px;background:#5D4037;border-radius:3px}
+  .lw-panels{display:flex;justify-content:space-between;width:280px}
+  .lw-side{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:70px;justify-content:flex-end;padding-bottom:4px;min-width:80px}
+  .wt{width:46px;height:20px;background:linear-gradient(135deg,#6366F1,#4338CA);border-radius:4px;color:#fff;font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.25)}
+  .lw-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+  .balance-msg{font-family:'Fredoka One',cursive;font-size:1.2rem;text-align:center;margin:10px 0;min-height:32px;transition:color .3s}
+  .rainbow-canvas{display:block;max-width:100%;border-radius:12px}
+</style>
+</head>
+<body>
+
+<div class="bg-stars" id="bgStars"></div>
+
+<header class="main-header">
+  <div class="header-content">
+    <span class="mascot-icon">🤖</span>
+    <div>
+      <div class="header-title">KidSpark! ⚡</div>
+      <div class="header-sub">Physics Fun ⚡</div>
+    </div>
+    <div class="stars-pill">⭐ <span id="totalStars">0</span> Stars</div>
+  </div>
+</header>
+
+<a href="index.html" class="nav-back">← Back to Home</a>
+
+<section class="subject-hero">
+  <span class="big-icon">⚡</span>
+  <h2>Physics Fun!</h2>
+  <p>Physics explains why things move, fall, push, and pull!</p>
+</section>
+
+<div class="activities">
+
+  <!-- ══ ACTIVITY 1: GRAVITY DROP ══ -->
+  <div class="activity-card">
+    <div class="act-header physics-hdr">
+      <span class="act-num">1</span>
+      Gravity Drop! 🌍
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Gravity pulls everything down at the same speed! A feather falls slower only because air pushes against it. Pick two objects and drop them — which lands first?</p>
+
+      <div class="obj-picker" id="objPicker">
+        <div class="obj-btn" onclick="selectObj(this,'🪶','Feather',2.8)"><span>🪶</span><span class="obj-name">Feather</span></div>
+        <div class="obj-btn" onclick="selectObj(this,'🏈','Ball',0.9)"><span>🏈</span><span class="obj-name">Ball</span></div>
+        <div class="obj-btn" onclick="selectObj(this,'📚','Book',0.9)"><span>📚</span><span class="obj-name">Book</span></div>
+        <div class="obj-btn" onclick="selectObj(this,'🪨','Rock',0.9)"><span>🪨</span><span class="obj-name">Rock</span></div>
+        <div class="obj-btn" onclick="selectObj(this,'🐘','Elephant',0.9)"><span>🐘</span><span class="obj-name">Elephant</span></div>
+      </div>
+
+      <p style="text-align:center;font-size:.88rem;color:var(--mid);margin-bottom:10px" id="dropInstruct">Pick any object above, then drop it!</p>
+      <div style="text-align:center;margin-bottom:14px">
+        <button class="btn btn-physics" id="dropBtn" onclick="dropObject()" disabled>Drop it! 🔽</button>
+        <button class="btn btn-sm" style="margin-left:8px;background:#E5E7EB;color:#374151" onclick="resetDrop()">Reset 🔄</button>
+      </div>
+
+      <div class="drop-sky exp-area" id="dropZone" style="height:280px;min-height:0;background:linear-gradient(to bottom,#87CEEB 0%,#B0E0FF 62%,#228B22 62%,#5D4037 72%,#5D4037 100%);padding:0;overflow:hidden;position:relative">
+        <div id="dropObj" class="falling-obj" style="top:8%;--fall-dur:.9s;display:none"></div>
+        <div style="position:absolute;bottom:22%;left:0;right:0;text-align:center;font-size:.75rem;font-weight:700;color:#fff;pointer-events:none">Ground</div>
+      </div>
+
+      <div id="dropResult" class="result-box" style="margin-top:12px"></div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>🍎 Isaac Newton's Discovery</h4>
+        <p>Legend says Isaac Newton discovered gravity when an apple fell on his head in 1666! He figured out that EVERYTHING with mass pulls on everything else — that's gravity! On the Moon, you'd weigh 6 times LESS because the Moon has less gravity.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 2: MAGNET EXPLORER ══ -->
+  <div class="activity-card">
+    <div class="act-header physics-hdr">
+      <span class="act-num">2</span>
+      Magnet Explorer 🧲
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Magnets have two poles — NORTH (N) and SOUTH (S). Opposite poles attract each other, and same poles repel! Click the button to flip one magnet and see what happens!</p>
+
+      <div style="text-align:center">
+        <div class="mag-wrap" id="magWrap" style="--mgap:60px">
+          <div class="mag-body">
+            <div style="font-size:2.8rem">🧲</div>
+            <div style="display:flex;gap:3px;margin-top:4px">
+              <span class="pole-label north-pole">N</span>
+              <span class="pole-label south-pole">S</span>
+            </div>
+            <div style="font-size:.75rem;font-weight:700;margin-top:4px;color:var(--mid)">Magnet 1</div>
+          </div>
+
+          <div id="forceArrows" style="font-size:1.6rem;min-width:50px;text-align:center;opacity:0;transition:opacity .4s"></div>
+
+          <div class="mag-body" id="mag2body">
+            <div style="font-size:2.8rem" id="mag2emoji">🧲</div>
+            <div style="display:flex;gap:3px;margin-top:4px" id="mag2poles">
+              <span class="pole-label south-pole">S</span>
+              <span class="pole-label north-pole">N</span>
+            </div>
+            <div style="font-size:.75rem;font-weight:700;margin-top:4px;color:var(--mid)">Magnet 2</div>
+          </div>
+        </div>
+
+        <div id="magStatus" style="font-family:'Fredoka One',cursive;font-size:1.3rem;margin:12px 0;min-height:34px;color:#4ECDC4">N→S and S→N face each other = ATTRACT! 🤝</div>
+
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-physics" onclick="flipMagnet()">Flip Magnet 2 🔄</button>
+          <button class="btn btn-sm" style="background:#E5E7EB;color:#374151" onclick="resetMagnets()">Reset</button>
+        </div>
+
+        <div id="magQuiz" style="margin-top:20px;background:#F3F4F6;border-radius:12px;padding:16px">
+          <p style="font-weight:700;margin-bottom:12px;font-size:1rem">Quick Quiz! What happens when two NORTH poles face each other?</p>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-sm btn-success" onclick="checkMagQ('attract',this)">They attract 🤝</button>
+            <button class="btn btn-sm btn-danger" onclick="checkMagQ('repel',this)">They repel 💨</button>
+            <button class="btn btn-sm" style="background:#E5E7EB;color:#374151" onclick="checkMagQ('nothing',this)">Nothing happens</button>
+          </div>
+          <div id="magQResult" class="result-box"></div>
+        </div>
+      </div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>🌍 Earth is a Magnet!</h4>
+        <p>The Earth itself is a giant magnet! That's why compasses work — the compass needle is a tiny magnet that aligns with Earth's magnetic field to always point North. Migrating birds and sea turtles can sense Earth's magnetic field to navigate!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 3: LEVER BALANCE ══ -->
+  <div class="activity-card">
+    <div class="act-header physics-hdr">
+      <span class="act-num">3</span>
+      Lever Balance ⚖️
+    </div>
+    <div class="act-body">
+      <p class="act-desc">A lever is a simple machine — like a see-saw! Add weights to each side and see if it balances or tips. Can you make it perfectly balanced? Each block is 1 kg.</p>
+
+      <div class="lever-wrap">
+        <div class="lw-panels" id="lwPanels">
+          <div class="lw-side" id="lwLeft"></div>
+          <div style="width:60px"></div>
+          <div class="lw-side" id="lwRight"></div>
+        </div>
+        <div class="lever-beam" id="leverBeam"><div class="beam-center"></div></div>
+        <div class="tri"></div>
+        <div class="base-line"></div>
+      </div>
+
+      <div class="balance-msg" id="balanceMsg">Add some weights to get started!</div>
+
+      <div class="lw-btns">
+        <button class="btn btn-sm btn-physics" onclick="addWeight('left')">⬅️ Add Left</button>
+        <button class="btn btn-sm btn-danger" onclick="removeWeight('left')">⬅️ Remove Left</button>
+        <button class="btn btn-sm btn-physics" onclick="addWeight('right')">Add Right ➡️</button>
+        <button class="btn btn-sm btn-danger" onclick="removeWeight('right')">Remove Right ➡️</button>
+        <button class="btn btn-sm" style="background:#E5E7EB;color:#374151" onclick="resetLever()">Reset 🔄</button>
+      </div>
+
+      <div id="leverResult" class="result-box"></div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>⚖️ How Levers Work</h4>
+        <p>A lever has a pivot point called a <b>fulcrum</b>. Weight on one side pushes down, weight on the other side pushes down the other way. When both sides are equal, it balances! Levers are used in seesaws, scissors, wheelbarrows, and even your arm!</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="main-footer">🌟 Keep Learning, Keep Growing! Made with ❤️ for curious kids everywhere 🌍</footer>
+
+<script src="app.js"></script>
+<script>
+// ── GRAVITY DROP ──
+let selObj=null, dropped=false;
+const objData={};
+
+function selectObj(btn,emoji,name,fallDur){
+  document.querySelectorAll('.obj-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selObj={emoji,name,fallDur};
+  document.getElementById('dropBtn').disabled=false;
+  document.getElementById('dropInstruct').textContent=`Selected: ${emoji} ${name} — now press Drop it!`;
+  resetDrop(true);
+}
+
+function dropObject(){
+  if(!selObj||dropped) return;
+  dropped=true;
+  document.getElementById('dropBtn').disabled=true;
+  const obj=document.getElementById('dropObj');
+  obj.style.display='block';
+  obj.textContent=selObj.emoji;
+  obj.style.top='8%';
+  obj.style.setProperty('--fall-dur',selObj.fallDur+'s');
+  // force reflow
+  obj.getBoundingClientRect();
+  obj.classList.add('landed');
+  // result message
+  setTimeout(()=>{
+    const res=document.getElementById('dropResult');
+    const isFeather=selObj.name==='Feather';
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">${selObj.emoji}</span><span class="r-txt">${isFeather?`The ${selObj.name} fell slowly because AIR RESISTANCE pushed up against it! In space (no air), it would fall just as fast as a rock!`:`The ${selObj.name} fell fast! In a vacuum (no air), even a feather falls this fast. Gravity pulls everything equally!`}</span>`;
+    addStars(1,'physics');
+    beep('correct');
+  }, selObj.fallDur*1000+200);
+}
+
+function resetDrop(silent){
+  dropped=false;
+  const obj=document.getElementById('dropObj');
+  obj.classList.remove('landed');
+  obj.style.top='8%';
+  obj.style.display='none';
+  if(!silent){
+    document.getElementById('dropResult').className='result-box';
+    document.getElementById('dropBtn').disabled=!selObj;
+    document.querySelectorAll('.obj-btn').forEach(b=>b.classList.remove('selected'));
+    selObj=null;
+    document.getElementById('dropInstruct').textContent='Pick any object above, then drop it!';
+  }
+}
+
+// ── MAGNETS ──
+let mag2Flipped=false, magStarGiven=false;
+function flipMagnet(){
+  mag2Flipped=!mag2Flipped;
+  const poles=document.getElementById('mag2poles');
+  const wrap=document.getElementById('magWrap');
+  const arrows=document.getElementById('forceArrows');
+  const status=document.getElementById('magStatus');
+  if(mag2Flipped){
+    // N faces N → repel
+    poles.innerHTML='<span class="pole-label north-pole">N</span><span class="pole-label south-pole">S</span>';
+    wrap.style.setProperty('--mgap','90px');
+    arrows.style.opacity='1'; arrows.textContent='💨💨';
+    status.style.color='#FF6B6B';
+    status.textContent='N→N face each other = REPEL! They push apart! 💨';
+    if(!magStarGiven){ magStarGiven=true; addStars(1,'physics'); beep('correct'); }
+  } else {
+    // N→S attract
+    poles.innerHTML='<span class="pole-label south-pole">S</span><span class="pole-label north-pole">N</span>';
+    wrap.style.setProperty('--mgap','25px');
+    arrows.style.opacity='1'; arrows.textContent='🤝';
+    status.style.color='#34D399';
+    status.textContent='N→S and S→N face each other = ATTRACT! 🤝';
+  }
+}
+function resetMagnets(){
+  mag2Flipped=true; flipMagnet();
+  document.getElementById('forceArrows').style.opacity='0';
+}
+
+function checkMagQ(ans,btn){
+  document.querySelectorAll('#magQuiz .btn').forEach(b=>b.disabled=true);
+  const res=document.getElementById('magQResult');
+  if(ans==='repel'){
+    btn.style.outline='3px solid #34D399';
+    res.className='result-box show ok';
+    res.innerHTML='<span class="r-emoji">✅</span><span class="r-txt">Correct! N+N REPEL — like poles always push each other away! Same for S+S.</span>';
+    addStars(2,'physics'); beep('win'); confetti();
+  } else {
+    btn.style.outline='3px solid #FF6B6B';
+    res.className='result-box show err';
+    res.innerHTML='<span class="r-emoji">❌</span><span class="r-txt">Not quite! Same poles (N+N or S+S) always REPEL each other. Try the button above to see it!</span>';
+    beep('wrong');
+    setTimeout(()=>{ document.querySelectorAll('#magQuiz .btn').forEach(b=>b.disabled=false); },700);
+  }
+}
+
+// ── LEVER ──
+let lwL=0, lwR=0, leverStarGiven=false;
+function addWeight(side){
+  if(side==='left'&&lwL<5) lwL++;
+  else if(side==='right'&&lwR<5) lwR++;
+  updateLever();
+}
+function removeWeight(side){
+  if(side==='left'&&lwL>0) lwL--;
+  else if(side==='right'&&lwR>0) lwR--;
+  updateLever();
+}
+function resetLever(){ lwL=0; lwR=0; updateLever(); }
+
+function updateLever(){
+  // Render weight stacks
+  const lEl=document.getElementById('lwLeft'), rEl=document.getElementById('lwRight');
+  lEl.innerHTML=[...Array(lwL)].map(()=>'<div class="wt">1 kg</div>').join('');
+  rEl.innerHTML=[...Array(lwR)].map(()=>'<div class="wt">1 kg</div>').join('');
+
+  const diff=lwL-lwR;
+  const angle=Math.min(Math.max(diff*8,-35),35);
+  document.getElementById('leverBeam').style.transform=`rotate(${-angle}deg)`;
+
+  const msg=document.getElementById('balanceMsg');
+  const res=document.getElementById('leverResult');
+  if(lwL===0&&lwR===0){ msg.textContent='Add some weights to get started!'; msg.style.color=var_mid(); res.className='result-box'; return; }
+  if(diff===0){
+    msg.textContent='⚖️ BALANCED! Both sides are equal!';
+    msg.style.color='#34D399';
+    res.className='result-box show ok';
+    res.innerHTML='<span class="r-emoji">⭐</span><span class="r-txt">Perfect balance! '+lwL+' kg on each side. A balanced lever is called equilibrium!</span>';
+    if(!leverStarGiven){ leverStarGiven=true; addStars(2,'physics'); beep('win'); confetti(); }
+  } else if(diff>0){
+    msg.textContent='⬅️ Left side is heavier! It goes down!';
+    msg.style.color='#F59E0B';
+    res.className='result-box show err';
+    res.innerHTML='<span class="r-emoji">⬅️</span><span class="r-txt">Left has '+lwL+' kg, Right has '+lwR+' kg. Add more to the right to balance!</span>';
+  } else {
+    msg.textContent='➡️ Right side is heavier! It goes down!';
+    msg.style.color='#F59E0B';
+    res.className='result-box show err';
+    res.innerHTML='<span class="r-emoji">➡️</span><span class="r-txt">Right has '+lwR+' kg, Left has '+lwL+' kg. Add more to the left to balance!</span>';
+  }
+}
+function var_mid(){ return '#6B7280'; }
+</script>
+</body>
+</html>

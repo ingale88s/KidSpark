@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Logic Land 🧩 – KidSpark</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* memory game */
+  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:360px;margin:0 auto}
+  .mem-card{aspect-ratio:1;border-radius:12px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .4s;user-select:none}
+  .mem-card.flipped,.mem-card.matched{transform:rotateY(180deg)}
+  .mem-card.matched .card-back{background:#D1FAE5!important;border-color:#34D399!important}
+  .card-f,.card-b{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+  .card-f{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+  .card-f::before{content:'?';font-family:'Fredoka One',cursive;font-size:1.6rem}
+  .card-b{background:#fff;border:3px solid #E5E7EB;transform:rotateY(180deg)}
+  .mem-stats{display:flex;justify-content:space-between;margin-bottom:14px;font-weight:800;font-size:.95rem}
+
+  /* patterns */
+  .pat-seq{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0;align-items:center}
+  .pat-item{width:58px;height:58px;border-radius:10px;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-size:1.7rem}
+  .pat-blank{background:#fff!important;border:3px dashed #C7D2FE!important}
+  .pat-choices-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+  .pc{width:58px;height:58px;border-radius:10px;background:#fff;border:3px solid #E5E7EB;font-size:1.7rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+  .pc:hover{border-color:#667eea;transform:scale(1.08)}
+  .pc.ok{border-color:#34D399;background:#D1FAE5;pointer-events:none}
+  .pc.no{border-color:#FF6B6B;background:#FEE2E2;animation:shake .4s}
+
+  /* maze */
+  .maze-grid{display:inline-grid;border:4px solid #374151;border-radius:6px;overflow:hidden;background:#374151;gap:2px}
+  .mc{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:background .2s}
+  .mc-wall{background:#374151}
+  .mc-path{background:#F9FAFB}
+  .mc-start{background:#BBF7D0}
+  .mc-end{background:#FEF3C7}
+  .mc-player{background:#DBEAFE}
+  .maze-controls{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div class="bg-stars" id="bgStars"></div>
+
+<header class="main-header">
+  <div class="header-content">
+    <span class="mascot-icon">🤖</span>
+    <div>
+      <div class="header-title">KidSpark! ⚡</div>
+      <div class="header-sub">Logic Land 🧩</div>
+    </div>
+    <div class="stars-pill">⭐ <span id="totalStars">0</span> Stars</div>
+  </div>
+</header>
+
+<a href="index.html" class="nav-back">← Back to Home</a>
+
+<section class="subject-hero">
+  <span class="big-icon">🧩</span>
+  <h2>Logic Land!</h2>
+  <p>Flex your brain muscles with memory games, patterns, and puzzles!</p>
+</section>
+
+<div class="activities">
+
+  <!-- ══ ACTIVITY 1: MEMORY MATCH ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">1</span>
+      Memory Match 🃏
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Find all the matching science pairs! Click a card to flip it, then find its twin. Try to use as few moves as possible — your brain is your best tool! 🧠</p>
+
+      <div id="memStart" style="text-align:center;padding:20px">
+        <div style="font-size:3rem;margin-bottom:12px">🃏</div>
+        <button class="btn btn-logic" onclick="startMemory()">Start Game! 🎮</button>
+      </div>
+
+      <div id="memGame" style="display:none">
+        <div class="mem-stats">
+          <span>🎯 Moves: <span id="memMoves">0</span></span>
+          <span>✅ Pairs: <span id="memPairs">0</span>/8</span>
+          <span>⏱ <span id="memTime">0:00</span></span>
+        </div>
+        <div class="mem-grid" id="memGrid"></div>
+        <div id="memResult" class="result-box" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 2: PATTERN PUZZLE ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">2</span>
+      Pattern Puzzle 🔍
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Look at each pattern carefully. Figure out the rule and click the missing piece! Patterns are everywhere in nature and in math!</p>
+
+      <div id="patGame">
+        <div style="text-align:center;margin-bottom:14px">
+          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem">Pattern <span id="pNum">1</span> of <span id="pTotal">8</span></span>
+          &nbsp;
+          <span style="font-size:.9rem;font-weight:700;color:var(--mid)" id="pScore">Score: 0</span>
+        </div>
+        <div id="pHint" style="font-size:.88rem;color:var(--mid);margin-bottom:10px;text-align:center;min-height:20px"></div>
+        <div class="pat-seq" id="patSeq"></div>
+        <div class="pat-choices-row" id="patChoices"></div>
+        <div id="patResult" class="result-box" style="margin-top:10px"></div>
+      </div>
+
+      <div id="patDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px">🏆</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="patDoneMsg"></div>
+        <button class="btn btn-logic" onclick="resetPatGame()">Play Again 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 3: MAZE RUNNER ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">3</span>
+      Maze Runner 🐭
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Help the mouse 🐭 reach the cheese 🧀! Use the arrow buttons or keyboard arrow keys to move. Plan your path and don't hit the walls!</p>
+
+      <div style="text-align:center">
+        <div id="mazeWrap" style="display:inline-block;overflow-x:auto"></div>
+
+        <div class="maze-controls">
+          <div style="display:grid;grid-template-columns:repeat(3,48px);gap:4px">
+            <div></div>
+            <button class="btn btn-sm btn-logic" onclick="movePlayer('up')" style="padding:8px;font-size:1.2rem">⬆️</button>
+            <div></div>
+            <button class="btn btn-sm btn-logic" onclick="movePlayer('left')" style="padding:8px;font-size:1.2rem">⬅️</button>
+            <button class="btn btn-sm btn-logic" onclick="movePlayer('down')" style="padding:8px;font-size:1.2rem">⬇️</button>
+            <button class="btn btn-sm btn-logic" onclick="movePlayer('right')" style="padding:8px;font-size:1.2rem">➡️</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#E5E7EB;color:#374151" onclick="resetMaze()">Reset 🔄</button>
+          <button class="btn btn-sm btn-logic" onclick="nextMaze()">Next Maze ➡️</button>
+        </div>
+
+        <div style="margin-top:10px;font-size:.85rem;color:var(--mid)">Moves: <span id="mazeMoves" style="font-weight:800">0</span> &nbsp;|&nbsp; Maze <span id="mazeNum">1</span>/3</div>
+        <div id="mazeResult" class="result-box" style="margin-top:10px;max-width:360px;margin-left:auto;margin-right:auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 4: ODD ONE OUT ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">4</span>
+      Odd One Out 🔎
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Three items belong together in a group — but ONE doesn't fit! Can you spot which one is the odd one out? Click on it! 8 rounds total.</p>
+
+      <div id="oooGame">
+        <div style="text-align:center;margin-bottom:14px">
+          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem">Set <span id="oooNum">1</span>/8</span>
+          &nbsp; <span style="font-weight:700;color:var(--mid)">✅ <span id="oooScore">0</span></span>
+        </div>
+        <div id="oooItems" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:16px 0"></div>
+        <div id="oooResult" class="result-box"></div>
+      </div>
+
+      <div id="oooDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="oooDoneEmoji">🏆</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="oooDoneMsg"></div>
+        <button class="btn btn-logic" onclick="resetOOO()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 5: TRUE OR FALSE ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">5</span>
+      True or False? 🤔
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Read each statement and decide: is it TRUE ✅ or FALSE ❌? Some are sneaky — think carefully before clicking!</p>
+
+      <div id="tfStart" style="text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px">🤔</div>
+        <button class="btn btn-logic" onclick="startTF()">Start! 🤔</button>
+      </div>
+
+      <div id="tfGame" style="display:none">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-weight:800;font-size:.95rem">
+          <span>Statement <span id="tfNum">1</span>/10</span>
+          <span>✅ <span id="tfScoreEl">0</span> correct</span>
+        </div>
+        <div id="tfStatement" style="background:#F3F4F6;border-radius:16px;padding:20px;font-size:1.1rem;font-weight:700;text-align:center;margin:14px 0;min-height:80px;display:flex;align-items:center;justify-content:center;line-height:1.55"></div>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-success" style="font-size:1.1rem;padding:14px 28px" id="tfTrue" onclick="answerTF(true)">✅ TRUE</button>
+          <button class="btn btn-danger" style="font-size:1.1rem;padding:14px 28px" id="tfFalse" onclick="answerTF(false)">❌ FALSE</button>
+        </div>
+        <div id="tfResult" class="result-box" style="margin-top:12px"></div>
+      </div>
+
+      <div id="tfDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="tfDoneEmoji">🧠</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="tfDoneMsg"></div>
+        <button class="btn btn-logic" onclick="resetTF()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 6: SORTING CHALLENGE ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">6</span>
+      Sorting Challenge 🔢
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Click the items in the correct order from SMALLEST to BIGGEST! If you click the wrong one it resets — so plan first, click second! 5 rounds.</p>
+
+      <div id="sortGame">
+        <div style="text-align:center;margin-bottom:12px">
+          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem">Round <span id="sortNum">1</span>/5</span>
+          &nbsp; <span style="font-weight:700;color:var(--mid)">✅ <span id="sortScore">0</span></span>
+        </div>
+        <div id="sortInstruct" style="text-align:center;font-size:.9rem;color:var(--mid);margin-bottom:10px">Click: smallest → biggest</div>
+        <div id="sortItems" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:14px 0"></div>
+        <div id="sortResult" class="result-box"></div>
+      </div>
+
+      <div id="sortDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="sortDoneEmoji">🏅</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="sortDoneMsg"></div>
+        <button class="btn btn-logic" onclick="resetSort()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 7: BRAIN TEASERS ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">7</span>
+      Brain Teasers 🧠
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Tricky riddles that require clever thinking! Read carefully and think outside the box. Even wrong answers teach you something cool! 8 teasers.</p>
+
+      <div id="btStart" style="text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px">🧠</div>
+        <button class="btn btn-logic" onclick="startBT()">Start Teasers! 🧠</button>
+      </div>
+
+      <div id="btGame" style="display:none">
+        <div style="text-align:center;margin-bottom:12px">
+          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem">Teaser <span id="btNum">1</span>/8</span>
+          &nbsp; <span style="font-weight:700;color:var(--mid)">✅ <span id="btScoreEl">0</span></span>
+        </div>
+        <div id="btQ" style="background:#F3F4F6;border-radius:16px;padding:20px;font-size:1.05rem;font-weight:700;text-align:center;margin:14px 0;min-height:80px;display:flex;align-items:center;justify-content:center;line-height:1.6"></div>
+        <div id="btOpts" style="display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto"></div>
+        <div id="btResult" class="result-box" style="margin-top:12px"></div>
+      </div>
+
+      <div id="btDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="btDoneEmoji">🧠</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="btDoneMsg"></div>
+        <button class="btn btn-logic" onclick="startBT()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="main-footer">🌟 Keep Learning, Keep Growing! Made with ❤️ for curious kids everywhere 🌍</footer>
+
+<script src="app.js"></script>
+<script>
+// ══ MEMORY MATCH ══
+const memEmojis=['🔬','🧪','⚗️','🔭','🧬','🌡️','🧲','⚡'];
+let memCards=[], memFlipped=[], memMatched=0, memMoves=0, memCanFlip=true;
+let memTimerInterval=null, memSeconds=0;
+
+function startMemory(){
+  document.getElementById('memStart').style.display='none';
+  document.getElementById('memGame').style.display='block';
+  memCards=[...memEmojis,...memEmojis].sort(()=>Math.random()-.5);
+  memFlipped=[]; memMatched=0; memMoves=0; memSeconds=0; memCanFlip=true; matchedSet=new Set();
+  document.getElementById('memMoves').textContent='0';
+  document.getElementById('memPairs').textContent='0';
+  document.getElementById('memResult').className='result-box';
+  clearInterval(memTimerInterval);
+  memTimerInterval=setInterval(()=>{
+    memSeconds++;
+    const m=Math.floor(memSeconds/60), s=memSeconds%60;
+    document.getElementById('memTime').textContent=m+':'+(s<10?'0':'')+s;
+  },1000);
+  renderMemGrid();
+}
+
+function renderMemGrid(){
+  const grid=document.getElementById('memGrid');
+  grid.innerHTML=memCards.map((e,i)=>`
+    <div class="mem-card" id="mc${i}" onclick="flipCard(${i})">
+      <div class="card-f"></div>
+      <div class="card-b" id="mcb${i}">${e}</div>
+    </div>
+  `).join('');
+}
+
+let matchedSet=new Set();
+function flipCard(i){
+  if(!memCanFlip) return;
+  if(matchedSet.has(i)) return;
+  if(memFlipped.includes(i)) return;
+  if(memFlipped.length>=2) return;
+  const card=document.getElementById('mc'+i);
+  card.classList.add('flipped');
+  memFlipped.push(i);
+  beep('pop');
+  if(memFlipped.length===2){
+    memMoves++;
+    document.getElementById('memMoves').textContent=memMoves;
+    memCanFlip=false;
+    const [a,b]=memFlipped;
+    if(memCards[a]===memCards[b]){
+      // match
+      setTimeout(()=>{
+        document.getElementById('mc'+a).classList.add('matched');
+        document.getElementById('mc'+b).classList.add('matched');
+        memMatched++;
+        document.getElementById('memPairs').textContent=memMatched;
+        memFlipped=[]; memCanFlip=true; matchedSet.add(a); matchedSet.add(b);
+        beep('correct');
+        if(memMatched===8){ endMemory(); }
+      },500);
+    } else {
+      // no match
+      setTimeout(()=>{
+        document.getElementById('mc'+a).classList.remove('flipped');
+        document.getElementById('mc'+b).classList.remove('flipped');
+        memFlipped=[]; memCanFlip=true;
+        beep('wrong');
+      },900);
+    }
+  }
+}
+
+function endMemory(){
+  clearInterval(memTimerInterval);
+  const stars=memMoves<=16?3:memMoves<=24?2:1;
+  const res=document.getElementById('memResult');
+  res.className='result-box show ok';
+  let msg=memMoves<=16?`Amazing! Only ${memMoves} moves! You have an incredible memory! ⭐⭐⭐`:
+           memMoves<=24?`Great job! ${memMoves} moves. Good memory! ⭐⭐`:
+           `You did it! ${memMoves} moves. Practice will help you get faster! ⭐`;
+  res.innerHTML=`<span class="r-emoji">🏆</span><span class="r-txt">${msg}</span>`;
+  addStars(stars,'logic');
+  confetti();
+  beep('win');
+}
+
+// ══ PATTERN PUZZLE ══
+const patterns=[
+  {seq:['🔴','🔵','🔴','🔵','❓'],ans:'🔴',choices:['🔴','🔵','🟡','🟢'],hint:'Colors alternate: Red, Blue, Red, Blue, ...'},
+  {seq:['⭐','⭐','🌙','⭐','⭐','❓'],ans:'🌙',choices:['⭐','🌙','☀️','💫'],hint:'Pattern: Star, Star, Moon repeats!'},
+  {seq:['🐱','🐶','🐱','🐶','🐱','❓'],ans:'🐶',choices:['🐱','🐶','🐰','🐸'],hint:'Cat and Dog alternate!'},
+  {seq:['🟥','🟥','🟦','🟥','🟥','❓'],ans:'🟦',choices:['🟥','🟦','🟨','🟩'],hint:'Two reds, then one blue — it repeats!'},
+  {seq:['1','2','3','4','❓'],ans:'5',choices:['4','5','6','7'],hint:'Count up by 1 each time!'},
+  {seq:['2','4','6','8','❓'],ans:'10',choices:['9','10','11','12'],hint:'Count up by 2s (even numbers)!'},
+  {seq:['10','20','30','❓'],ans:'40',choices:['35','40','45','50'],hint:'Count up by 10s!'},
+  {seq:['🌱','🌿','🌳','🌱','🌿','❓'],ans:'🌳',choices:['🌱','🌿','🌳','🌲'],hint:'Seedling → Sprout → Tree repeats!'},
+];
+let pIdx=0, pScore=0;
+
+function renderPattern(){
+  if(pIdx>=patterns.length){ endPatGame(); return; }
+  const p=patterns[pIdx];
+  document.getElementById('pNum').textContent=pIdx+1;
+  document.getElementById('pTotal').textContent=patterns.length;
+  document.getElementById('pScore').textContent='Score: '+pScore;
+  document.getElementById('pHint').textContent='Hint: '+p.hint;
+  document.getElementById('patResult').className='result-box';
+  const seq=document.getElementById('patSeq');
+  seq.innerHTML=p.seq.map(v=>v==='❓'?
+    '<div class="pat-item pat-blank" style="font-size:1.7rem;color:#C7D2FE">❓</div>':
+    `<div class="pat-item">${v}</div>`
+  ).join('<span style="color:#9CA3AF;font-size:1.4rem">→</span>');
+  const choices=document.getElementById('patChoices');
+  const shuffled=[...p.choices].sort(()=>Math.random()-.5);
+  choices.innerHTML=shuffled.map(c=>`<div class="pc" onclick="pickPat(this,'${c}','${p.ans}')">${c}</div>`).join('');
+}
+
+function pickPat(btn,chosen,ans){
+  const res=document.getElementById('patResult');
+  if(chosen===ans){
+    btn.classList.add('ok');
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">Correct! ${patterns[pIdx].hint}</span>`;
+    pScore++;
+    addStars(1,'logic');
+    beep('correct');
+    document.querySelectorAll('.pc').forEach(b=>b.style.pointerEvents='none');
+    setTimeout(()=>{ pIdx++; renderPattern(); },1200);
+  } else {
+    btn.classList.add('no');
+    res.className='result-box show err';
+    res.innerHTML='<span class="r-emoji">🤔</span><span class="r-txt">Not quite! Look at the pattern again...</span>';
+    beep('wrong');
+    setTimeout(()=>btn.classList.remove('no'),600);
+  }
+}
+
+function endPatGame(){
+  document.getElementById('patGame').style.display='none';
+  document.getElementById('patDone').style.display='block';
+  const msg=pScore>=6?`🏆 Pattern Master! ${pScore}/${patterns.length} correct! Incredible!`:
+             pScore>=4?`⭐ Pattern Pro! ${pScore}/${patterns.length} correct! Great job!`:
+             `💪 Good try! ${pScore}/${patterns.length}. Play again to improve!`;
+  document.getElementById('patDoneMsg').textContent=msg;
+  if(pScore>=6){ addStars(3,'logic'); confetti(); beep('win'); }
+  else if(pScore>=4){ addStars(2,'logic'); confetti(); }
+}
+function resetPatGame(){
+  pIdx=0; pScore=0;
+  document.getElementById('patGame').style.display='block';
+  document.getElementById('patDone').style.display='none';
+  renderPattern();
+}
+
+renderPattern();
+
+// ══ MAZE ══
+// 1=wall, 0=path, 2=start, 3=end
+const mazes=[
+  [
+    [1,1,1,1,1,1,1,1],
+    [1,2,0,0,1,0,3,1],
+    [1,1,1,0,1,0,1,1],
+    [1,0,0,0,0,0,1,1],
+    [1,0,1,1,1,0,1,1],
+    [1,0,0,1,0,0,0,1],
+    [1,1,0,0,0,1,0,1],
+    [1,1,1,1,1,1,1,1],
+  ],
+  [
+    [1,1,1,1,1,1,1,1],
+    [1,2,1,0,0,0,1,1],
+    [1,0,1,0,1,0,1,1],
+    [1,0,0,0,1,0,0,1],
+    [1,1,1,0,1,1,0,1],
+    [1,0,0,0,0,0,0,1],
+    [1,0,1,1,1,0,3,1],
+    [1,1,1,1,1,1,1,1],
+  ],
+  [
+    [1,1,1,1,1,1,1,1,1],
+    [1,2,0,0,0,1,0,0,1],
+    [1,1,1,1,0,1,0,1,1],
+    [1,0,0,0,0,0,0,1,1],
+    [1,0,1,1,1,1,0,1,1],
+    [1,0,0,0,1,0,0,1,1],
+    [1,1,1,0,1,0,1,1,1],
+    [1,0,0,0,0,0,3,1,1],
+    [1,1,1,1,1,1,1,1,1],
+  ],
+];
+
+let mazeIdx=0, playerR=1, playerC=1, mazeMoves=0, mazeSolved=false;
+const startPos=[[1,1],[1,1],[1,1]];
+const endPos=[[1,6],[6,6],[7,6]];
+
+function renderMaze(){
+  const maze=mazes[mazeIdx];
+  const cols=maze[0].length;
+  const wrap=document.getElementById('mazeWrap');
+  const grid=document.createElement('div');
+  grid.className='maze-grid';
+  grid.style.gridTemplateColumns=`repeat(${cols},38px)`;
+  maze.forEach((row,r)=>row.forEach((cell,c)=>{
+    const div=document.createElement('div');
+    div.className='mc';
+    div.id=`maze-${r}-${c}`;
+    if(r===playerR&&c===playerC){ div.className+=' mc-player'; div.textContent='🐭'; }
+    else if(r===endPos[mazeIdx][0]&&c===endPos[mazeIdx][1]){ div.className+=' mc-end'; div.textContent='🧀'; }
+    else if(cell===1){ div.className+=' mc-wall'; }
+    else if(r===startPos[mazeIdx][0]&&c===startPos[mazeIdx][1]){ div.className+=' mc-start'; }
+    else{ div.className+=' mc-path'; }
+    grid.appendChild(div);
+  }));
+  wrap.innerHTML='';
+  wrap.appendChild(grid);
+  document.getElementById('mazeNum').textContent=mazeIdx+1;
+  document.getElementById('mazeMoves').textContent=mazeMoves;
+  document.getElementById('mazeResult').className='result-box';
+}
+
+function movePlayer(dir){
+  if(mazeSolved) return;
+  const maze=mazes[mazeIdx];
+  let nr=playerR, nc=playerC;
+  if(dir==='up') nr--;
+  else if(dir==='down') nr++;
+  else if(dir==='left') nc--;
+  else if(dir==='right') nc++;
+  if(nr<0||nr>=maze.length||nc<0||nc>=maze[0].length) return;
+  if(maze[nr][nc]===1) return;
+  playerR=nr; playerC=nc; mazeMoves++;
+  beep('pop');
+  renderMaze();
+  if(nr===endPos[mazeIdx][0]&&nc===endPos[mazeIdx][1]){
+    mazeSolved=true;
+    const res=document.getElementById('mazeResult');
+    res.className='result-box show ok';
+    const stars=mazeMoves<=15?3:mazeMoves<=25?2:1;
+    res.innerHTML=`<span class="r-emoji">🎉</span><span class="r-txt">You found the cheese in ${mazeMoves} moves! ${'⭐'.repeat(stars)}</span>`;
+    addStars(stars,'logic');
+    beep('win');
+    confetti();
+  }
+}
+
+function resetMaze(){
+  playerR=startPos[mazeIdx][0]; playerC=startPos[mazeIdx][1];
+  mazeMoves=0; mazeSolved=false;
+  renderMaze();
+}
+
+function nextMaze(){
+  mazeIdx=(mazeIdx+1)%mazes.length;
+  resetMaze();
+}
+
+renderMaze();
+
+// Keyboard support for maze
+document.addEventListener('keydown',e=>{
+  const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};
+  if(map[e.key]){ e.preventDefault(); movePlayer(map[e.key]); }
+});
+
+// ══ ODD ONE OUT ══
+const oooSets=[
+  {items:['🐶','🐱','🐟','🐰'], odd:2, reason:'The fish 🐟 lives in water — the others are land pets!'},
+  {items:['🍎','🍌','🥕','🍓'], odd:2, reason:'The carrot 🥕 is a vegetable — the others are fruits!'},
+  {items:['🚗','🚌','🚂','✈️'], odd:3, reason:'The plane ✈️ flies in the air — the others travel on the ground!'},
+  {items:['🔴','🔵','🟡','🔲'], odd:3, reason:'The black square 🔲 is a shape — the circles are all colors!'},
+  {items:['2','4','7','6'],     odd:2, reason:'7 is ODD — the others (2, 4, 6) are all EVEN numbers!'},
+  {items:['🌙','⭐','☀️','🌧️'], odd:3, reason:'Rain 🌧️ is weather — the others are objects in the sky!'},
+  {items:['🎸','🎹','🎺','🖌️'], odd:3, reason:'A paintbrush 🖌️ is for art — the others are musical instruments!'},
+  {items:['3','6','9','8'],     odd:3, reason:'8 is not a multiple of 3 — 3, 6, and 9 all are!'},
+];
+let oooIdx=0, oooScore=0;
+
+function renderOOO(){
+  if(oooIdx>=oooSets.length){ endOOO(); return; }
+  const set=oooSets[oooIdx];
+  document.getElementById('oooNum').textContent=oooIdx+1;
+  document.getElementById('oooScore').textContent=oooScore;
+  document.getElementById('oooResult').className='result-box';
+  const shuffled=set.items.map((item,i)=>({item,origIdx:i})).sort(()=>Math.random()-.5);
+  document.getElementById('oooItems').innerHTML=shuffled.map(({item,origIdx})=>
+    `<div onclick="pickOOO(this,${origIdx})"
+      style="width:82px;height:82px;border-radius:14px;background:#F3F4F6;display:flex;align-items:center;
+             justify-content:center;font-size:2.3rem;cursor:pointer;border:3px solid transparent;
+             transition:all .2s;user-select:none;font-family:'Fredoka One',cursive;">
+       ${item}
+     </div>`
+  ).join('');
+}
+function pickOOO(btn,idx){
+  const set=oooSets[oooIdx];
+  document.getElementById('oooItems').querySelectorAll('div').forEach(b=>b.onclick=null);
+  const res=document.getElementById('oooResult');
+  if(idx===set.odd){
+    btn.style.borderColor='#34D399'; btn.style.background='#D1FAE5';
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">${set.reason}</span>`;
+    oooScore++; beep('correct');
+  } else {
+    btn.style.borderColor='#FF6B6B'; btn.style.background='#FEE2E2';
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">Not quite! ${set.reason}</span>`;
+    beep('wrong');
+  }
+  oooIdx++;
+  setTimeout(renderOOO,1500);
+}
+function endOOO(){
+  document.getElementById('oooGame').style.display='none';
+  document.getElementById('oooDone').style.display='block';
+  const s=oooScore>=7?3:oooScore>=5?2:oooScore>=3?1:0;
+  document.getElementById('oooDoneEmoji').textContent=s>=3?'🔎':s>=2?'🌟':'💪';
+  document.getElementById('oooDoneMsg').textContent=`${oooScore}/8 correct! ${s>=3?'Super Spotter! 🔎':s>=2?'Great eye for detail!':'Keep looking carefully!'}`;
+  if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
+}
+function resetOOO(){
+  oooIdx=0; oooScore=0;
+  document.getElementById('oooGame').style.display='block';
+  document.getElementById('oooDone').style.display='none';
+  renderOOO();
+}
+renderOOO();
+
+// ══ TRUE OR FALSE ══
+const tfStatements=[
+  {s:'A square has 4 equal sides.',                      ans:true,  exp:'TRUE! All 4 sides of a square are exactly the same length.'},
+  {s:'3 + 3 = 7',                                       ans:false, exp:'FALSE! 3 + 3 = 6, not 7.'},
+  {s:'Fish breathe using gills.',                        ans:true,  exp:'TRUE! Fish use gills to extract oxygen from water.'},
+  {s:'The Sun is a planet.',                             ans:false, exp:'FALSE! The Sun is a STAR — Earth, Mars, and Jupiter are planets!'},
+  {s:'10 × 0 = 10',                                     ans:false, exp:'FALSE! Any number × 0 = 0. That\'s the zero property!'},
+  {s:'Spiders have 8 legs.',                             ans:true,  exp:'TRUE! Spiders are arachnids — they always have exactly 8 legs!'},
+  {s:'Ice is a solid form of water.',                    ans:true,  exp:'TRUE! Below 0°C, water freezes into solid ice.'},
+  {s:'5 is an even number.',                             ans:false, exp:'FALSE! 5 is ODD. Even numbers end in 0, 2, 4, 6, or 8.'},
+  {s:'The Moon makes its own light.',                    ans:false, exp:'FALSE! The Moon just reflects sunlight from the Sun — it has no light of its own.'},
+  {s:'A triangle has 3 sides and 3 angles.',             ans:true,  exp:'TRUE! TRI means three. Three sides, three corners (angles)!'},
+];
+let tfIdx=0, tfScoreVal=0, tfAnswered=false, tfOrder=[];
+
+function startTF(){
+  tfOrder=[...Array(tfStatements.length).keys()].sort(()=>Math.random()-.5);
+  tfIdx=0; tfScoreVal=0; tfAnswered=false;
+  document.getElementById('tfStart').style.display='none';
+  document.getElementById('tfDone').style.display='none';
+  document.getElementById('tfGame').style.display='block';
+  showTF();
+}
+function showTF(){
+  if(tfIdx>=10){ endTF(); return; }
+  tfAnswered=false;
+  const s=tfStatements[tfOrder[tfIdx]];
+  document.getElementById('tfNum').textContent=tfIdx+1;
+  document.getElementById('tfScoreEl').textContent=tfScoreVal;
+  document.getElementById('tfStatement').textContent=s.s;
+  document.getElementById('tfResult').className='result-box';
+  document.getElementById('tfTrue').disabled=false;
+  document.getElementById('tfFalse').disabled=false;
+}
+function answerTF(chosen){
+  if(tfAnswered) return; tfAnswered=true;
+  document.getElementById('tfTrue').disabled=true;
+  document.getElementById('tfFalse').disabled=true;
+  const s=tfStatements[tfOrder[tfIdx]];
+  const res=document.getElementById('tfResult');
+  if(chosen===s.ans){
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">${s.exp}</span>`;
+    tfScoreVal++; beep('correct');
+  } else {
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">${s.exp}</span>`;
+    beep('wrong');
+  }
+  tfIdx++;
+  setTimeout(showTF,1600);
+}
+function endTF(){
+  document.getElementById('tfGame').style.display='none';
+  document.getElementById('tfDone').style.display='block';
+  const s=tfScoreVal>=9?3:tfScoreVal>=7?2:tfScoreVal>=5?1:0;
+  document.getElementById('tfDoneEmoji').textContent=s>=3?'🧠':s>=2?'🌟':'💪';
+  document.getElementById('tfDoneMsg').textContent=`${tfScoreVal}/10 correct! ${s>=3?'Truth Seeker Supreme! 🧠':s>=2?'Sharp thinker!':'Keep questioning everything!'}`;
+  if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
+}
+function resetTF(){
+  document.getElementById('tfGame').style.display='none';
+  document.getElementById('tfDone').style.display='none';
+  document.getElementById('tfStart').style.display='block';
+}
+
+// ══ SORTING CHALLENGE ══
+const sortRounds=[
+  {items:[{v:7,l:'7'},{v:3,l:'3'},{v:15,l:'15'},{v:1,l:'1'},{v:9,l:'9'}], note:''},
+  {items:[{v:1,l:'🐜'},{v:2,l:'🐸'},{v:3,l:'🐕'},{v:4,l:'🐘'},{v:5,l:'🦕'}], note:'ant < frog < dog < elephant < dinosaur'},
+  {items:[{v:4,l:'4'},{v:12,l:'12'},{v:8,l:'8'},{v:20,l:'20'},{v:2,l:'2'}], note:''},
+  {items:[{v:10,l:'10'},{v:100,l:'100'},{v:1,l:'1'},{v:50,l:'50'},{v:25,l:'25'}], note:''},
+  {items:[{v:1,l:'🌱'},{v:2,l:'🌿'},{v:3,l:'🌳'},{v:4,l:'🏔️'},{v:5,l:'🌍'}], note:'seedling → sprout → tree → mountain → Earth'},
+];
+let sortIdx=0, sortScoreVal=0, sortClickOrder=[], sortTargetOrder=[];
+
+function renderSort(){
+  if(sortIdx>=sortRounds.length){ endSort(); return; }
+  const round=sortRounds[sortIdx];
+  sortClickOrder=[];
+  sortTargetOrder=[...round.items].sort((a,b)=>a.v-b.v).map(i=>i.v);
+  document.getElementById('sortNum').textContent=sortIdx+1;
+  document.getElementById('sortScore').textContent=sortScoreVal;
+  document.getElementById('sortResult').className='result-box';
+  document.getElementById('sortInstruct').innerHTML='Click: smallest → biggest'+(round.note?`<br><em style="font-size:.8rem">${round.note}</em>`:'');
+  const shuffled=[...round.items].sort(()=>Math.random()-.5);
+  document.getElementById('sortItems').innerHTML=shuffled.map(item=>
+    `<div id="si${item.v}" onclick="clickSort(${item.v})"
+      style="min-width:72px;padding:14px 10px;border-radius:14px;background:#F3F4F6;
+             border:3px solid transparent;cursor:pointer;font-size:1.8rem;text-align:center;
+             transition:all .2s;font-family:'Fredoka One',cursive;">
+       ${item.l}
+     </div>`
+  ).join('');
+}
+function clickSort(val){
+  const expected=sortTargetOrder[sortClickOrder.length];
+  const el=document.getElementById('si'+val);
+  if(val===expected){
+    sortClickOrder.push(val);
+    el.style.borderColor='#34D399'; el.style.background='#D1FAE5'; el.onclick=null;
+    beep('pop');
+    if(sortClickOrder.length===sortTargetOrder.length){
+      document.getElementById('sortResult').className='result-box show ok';
+      document.getElementById('sortResult').innerHTML=`<span class="r-emoji">🎉</span><span class="r-txt">Perfect! You sorted all ${sortTargetOrder.length} items!</span>`;
+      sortScoreVal++; addStars(1,'logic'); beep('correct');
+      sortIdx++;
+      setTimeout(renderSort,1500);
+    }
+  } else {
+    el.style.borderColor='#FF6B6B'; el.style.background='#FEE2E2';
+    document.getElementById('sortResult').className='result-box show err';
+    document.getElementById('sortResult').innerHTML='<span class="r-emoji">❌</span><span class="r-txt">That\'s not the smallest! Look again and reset.</span>';
+    beep('wrong');
+    setTimeout(()=>{
+      sortClickOrder=[];
+      sortRounds[sortIdx].items.forEach(item=>{
+        const el=document.getElementById('si'+item.v);
+        if(el){ el.style.borderColor='transparent'; el.style.background='#F3F4F6'; el.onclick=()=>clickSort(item.v); }
+      });
+      document.getElementById('sortResult').className='result-box';
+    },900);
+  }
+}
+function endSort(){
+  document.getElementById('sortGame').style.display='none';
+  document.getElementById('sortDone').style.display='block';
+  const s=sortScoreVal>=4?3:sortScoreVal>=3?2:sortScoreVal>=1?1:0;
+  document.getElementById('sortDoneEmoji').textContent=s>=3?'🏅':s>=2?'🌟':'💪';
+  document.getElementById('sortDoneMsg').textContent=`${sortScoreVal}/5 correct! ${s>=3?'Sorting Superstar! 🏅':s>=2?'Great ordering skills!':'Try again to improve!'}`;
+  if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
+}
+function resetSort(){
+  sortIdx=0; sortScoreVal=0;
+  document.getElementById('sortGame').style.display='block';
+  document.getElementById('sortDone').style.display='none';
+  renderSort();
+}
+renderSort();
+
+// ══ BRAIN TEASERS ══
+const btTeasers=[
+  {q:'I have hands but can\'t clap. I have a face but no nose. What am I?',
+   opts:['A mirror','A clock','A robot'], ans:1, exp:'A CLOCK! Clock hands point to numbers on the clock face!'},
+  {q:'What gets bigger the more you take away from it?',
+   opts:['A balloon','A hole','A snowball'], ans:1, exp:'A HOLE! The more you dig out, the bigger the hole gets!'},
+  {q:'A farmer has 17 sheep. All but 9 run away. How many are left?',
+   opts:['8','9','17'], ans:1, exp:'9 sheep! "All but 9" means 9 stayed — the rest ran away!'},
+  {q:'Which is heavier: a kilogram of feathers or a kilogram of rocks?',
+   opts:['Rocks are heavier','Feathers are heavier','They weigh the same!'], ans:2, exp:'SAME weight! Both are 1 kilogram — a kg is a kg no matter what it is!'},
+  {q:'I have cities but no houses. I have rivers but no water. What am I?',
+   opts:['A dream','A map','A painting'], ans:1, exp:'A MAP! Maps show cities and rivers as drawings, not real ones!'},
+  {q:'If there are 3 apples and you take away 2, how many do YOU have?',
+   opts:['1 apple','2 apples','3 apples'], ans:1, exp:'YOU have 2 — the ones you just TOOK! (1 apple is left behind, not yours.)'},
+  {q:'What can travel around the world without moving from its spot?',
+   opts:['A stamp on a letter','A satellite','A cloud'], ans:0, exp:'A STAMP! The letter travels the world, but the stamp just sits still on it!'},
+  {q:'I\'m always in front of you but can never be seen. What am I?',
+   opts:['Your shadow','The future','The wind'], ans:1, exp:'The FUTURE! You\'re always moving toward it but you can never actually see it!'},
+];
+let btIdx=0, btScoreVal=0, btAnswered=false;
+
+function startBT(){
+  btIdx=0; btScoreVal=0; btAnswered=false;
+  document.getElementById('btStart').style.display='none';
+  document.getElementById('btDone').style.display='none';
+  document.getElementById('btGame').style.display='block';
+  showBT();
+}
+function showBT(){
+  if(btIdx>=btTeasers.length){ endBT(); return; }
+  btAnswered=false;
+  const t=btTeasers[btIdx];
+  document.getElementById('btNum').textContent=btIdx+1;
+  document.getElementById('btScoreEl').textContent=btScoreVal;
+  document.getElementById('btQ').textContent=t.q;
+  document.getElementById('btResult').className='result-box';
+  document.getElementById('btOpts').innerHTML=t.opts.map((opt,i)=>
+    `<button onclick="answerBT(${i})"
+      style="padding:12px 18px;border-radius:12px;background:#F3F4F6;border:3px solid transparent;
+             cursor:pointer;font-family:Nunito,sans-serif;font-size:.95rem;font-weight:700;
+             text-align:left;transition:all .2s;" id="btOpt${i}"
+      onmouseover="this.style.borderColor='#667eea';this.style.background='#fff'"
+      onmouseout="if(!this.disabled){this.style.borderColor='transparent';this.style.background='#F3F4F6'}"
+    >${String.fromCharCode(65+i)}) ${opt}</button>`
+  ).join('');
+}
+function answerBT(chosen){
+  if(btAnswered) return; btAnswered=true;
+  const t=btTeasers[btIdx];
+  document.querySelectorAll('#btOpts button').forEach(b=>b.disabled=true);
+  const res=document.getElementById('btResult');
+  if(chosen===t.ans){
+    document.getElementById('btOpt'+chosen).style.cssText+=';border-color:#34D399;background:#D1FAE5';
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">🧠</span><span class="r-txt">${t.exp}</span>`;
+    btScoreVal++; beep('correct');
+  } else {
+    document.getElementById('btOpt'+chosen).style.cssText+=';border-color:#FF6B6B;background:#FEE2E2';
+    document.getElementById('btOpt'+t.ans).style.cssText+=';border-color:#34D399;background:#D1FAE5';
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">💡</span><span class="r-txt">${t.exp}</span>`;
+    beep('wrong');
+  }
+  btIdx++;
+  setTimeout(showBT,2100);
+}
+function endBT(){
+  document.getElementById('btGame').style.display='none';
+  document.getElementById('btDone').style.display='block';
+  const s=btScoreVal>=7?3:btScoreVal>=5?2:btScoreVal>=3?1:0;
+  document.getElementById('btDoneEmoji').textContent=s>=3?'🧠':s>=2?'💡':'🤔';
+  document.getElementById('btDoneMsg').textContent=`${btScoreVal}/8 correct! ${s>=3?'Master Thinker! Einstein would be impressed! 🧠':s>=2?'Super smart — great lateral thinking!':'These are hard! Well done for trying!'}`;
+  if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
+}
+</script>
+</body>
+</html>

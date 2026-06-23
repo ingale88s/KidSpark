@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Math Magic 🔢 – KidSpark</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-stars" id="bgStars"></div>
+
+<header class="main-header">
+  <div class="header-content">
+    <span class="mascot-icon">🤖</span>
+    <div>
+      <div class="header-title">KidSpark! ⚡</div>
+      <div class="header-sub">Math Magic 🔢</div>
+    </div>
+    <div class="stars-pill">⭐ <span id="totalStars">0</span> Stars</div>
+  </div>
+</header>
+
+<a href="index.html" class="nav-back">← Back to Home</a>
+
+<section class="subject-hero">
+  <span class="big-icon">🔢</span>
+  <h2>Math Magic!</h2>
+  <p>Numbers are everywhere! Let's count, quiz, and spot patterns.</p>
+</section>
+
+<div class="activities">
+
+  <!-- ══ ACTIVITY 1: NUMBER NINJA QUIZ ══ -->
+  <div class="activity-card">
+    <div class="act-header math-hdr">
+      <span class="act-num">1</span>
+      Number Ninja Quiz ⚔️
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Answer 10 math questions as fast as you can! Pick the right answer before the timer runs out. Get 3 stars for 8+ correct! ⭐</p>
+
+      <div id="quizStart">
+        <div style="text-align:center;padding:20px">
+          <div style="font-size:4rem;margin-bottom:12px">🥷</div>
+          <button class="btn btn-math" onclick="startQuiz()">Start Quiz! 🚀</button>
+        </div>
+      </div>
+
+      <div id="quizGame" style="display:none">
+        <div class="quiz-status">
+          <span class="quiz-score-text">Question <span id="qNum">1</span>/10</span>
+          <span class="quiz-score-text">✅ <span id="qScore">0</span> correct</span>
+          <span class="timer" id="qTimer">⏱ 10</span>
+        </div>
+        <div class="quiz-q" id="quizQ">3 + 4 = ?</div>
+        <div class="quiz-opts" id="quizOpts"></div>
+      </div>
+
+      <div id="quizEnd" style="display:none;text-align:center;padding:20px">
+        <div id="quizEndEmoji" style="font-size:4rem;margin-bottom:10px">🎉</div>
+        <div id="quizEndMsg" style="font-family:'Fredoka One',cursive;font-size:1.5rem;margin-bottom:14px"></div>
+        <div id="quizStars" style="font-size:1.8rem;margin-bottom:16px"></div>
+        <button class="btn btn-math" onclick="startQuiz()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 2: BUBBLE POP ══ -->
+  <div class="activity-card">
+    <div class="act-header math-hdr">
+      <span class="act-num">2</span>
+      Bubble Pop Counter 🫧
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Bubbles will float up on the screen. Pop every bubble by clicking on it, then tell us how many you popped! Count carefully!</p>
+
+      <div id="bubbleStart" style="text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px">🫧</div>
+        <button class="btn btn-math" onclick="startBubbles()">Launch Bubbles! 🚀</button>
+      </div>
+
+      <div id="bubbleGame" style="display:none">
+        <p style="text-align:center;font-weight:800;margin-bottom:10px;font-size:1rem">Pop all the bubbles! 🫧</p>
+        <div class="bubble-field" id="bubbleField"></div>
+        <div id="bubbleQuestion" style="display:none;margin-top:16px;text-align:center">
+          <p style="font-family:'Fredoka One',cursive;font-size:1.3rem;margin-bottom:12px">How many bubbles did you pop? 🤔</p>
+          <div style="display:flex;gap:10px;justify-content:center;align-items:center">
+            <input type="number" class="ans-input" id="bubbleAns" min="1" max="20" placeholder="?">
+            <button class="btn btn-math" onclick="checkBubbles()">Check! ✅</button>
+          </div>
+          <div id="bubbleResult" class="result-box"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 3: FILL THE PATTERN ══ -->
+  <div class="activity-card">
+    <div class="act-header math-hdr">
+      <span class="act-num">3</span>
+      Fill the Pattern 🧩
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Can you figure out the rule and fill in the missing numbers? Look at the pattern carefully and type your answers!</p>
+
+      <div id="patternArea">
+        <div id="patternQ" style="text-align:center;margin-bottom:20px;font-family:'Fredoka One',cursive;font-size:1.2rem">Pattern <span id="patNum">1</span> of 5</div>
+        <div class="pattern-row" id="patternRow"></div>
+        <div style="text-align:center;margin-top:16px">
+          <button class="btn btn-math" onclick="checkPattern()">Check My Answer! ✅</button>
+        </div>
+        <div id="patternResult" class="result-box" style="margin-top:12px"></div>
+        <div id="patternNext" style="display:none;text-align:center;margin-top:12px">
+          <button class="btn btn-success" onclick="nextPattern()">Next Pattern ➡️</button>
+        </div>
+      </div>
+
+      <div id="patternDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px">🏆</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.5rem;margin-bottom:14px" id="patternDoneMsg"></div>
+        <button class="btn btn-math" onclick="resetPatterns()">Try Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 4: MULTIPLICATION MAGIC ══ -->
+  <div class="activity-card">
+    <div class="act-header math-hdr">
+      <span class="act-num">4</span>
+      Multiplication Magic ✨
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Count the dots to discover multiplication! Each group shows rows × columns of dots. Answer all 8 and become a Times Table star! ⭐</p>
+
+      <div id="mulStart" style="text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px">✨</div>
+        <button class="btn btn-math" onclick="startMul()">Start! ✨</button>
+      </div>
+
+      <div id="mulGame" style="display:none">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-weight:800;font-size:.95rem">
+          <span>Question <span id="mulNum">1</span>/8</span>
+          <span>✅ <span id="mulScore">0</span> correct</span>
+        </div>
+        <div style="text-align:center">
+          <div id="mulDots" style="margin:14px auto 10px;display:inline-flex;flex-direction:column;gap:7px"></div>
+          <div class="quiz-q" id="mulQ" style="font-size:2rem;margin:8px 0"></div>
+          <div class="quiz-opts" id="mulOpts" style="max-width:360px;margin:0 auto"></div>
+        </div>
+      </div>
+
+      <div id="mulEnd" style="display:none;text-align:center;padding:20px">
+        <div id="mulEndEmoji" style="font-size:4rem;margin-bottom:10px">🎉</div>
+        <div id="mulEndMsg" style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px"></div>
+        <button class="btn btn-math" onclick="startMul()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 5: GREATER OR LESS ══ -->
+  <div class="activity-card">
+    <div class="act-header math-hdr">
+      <span class="act-num">5</span>
+      Greater or Less? ⚖️
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Look at two numbers and pick the right symbol: &lt; means "less than", &gt; means "greater than", = means "equal". Answer 10 rounds!</p>
+
+      <div id="glStart" style="text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px">⚖️</div>
+        <button class="btn btn-math" onclick="startGL()">Start! ⚖️</button>
+      </div>
+
+      <div id="glGame" style="display:none">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-weight:800;font-size:.95rem">
+          <span>Round <span id="glNum">1</span>/10</span>
+          <span>✅ <span id="glScoreEl">0</span> correct</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:24px;margin:18px 0">
+          <div id="glLeft" style="font-family:'Fredoka One',cursive;font-size:3.5rem;background:#F3F4F6;padding:14px 24px;border-radius:16px;min-width:90px;text-align:center"></div>
+          <div style="font-family:'Fredoka One',cursive;font-size:2rem;color:#9CA3AF">?</div>
+          <div id="glRight" style="font-family:'Fredoka One',cursive;font-size:3.5rem;background:#F3F4F6;padding:14px 24px;border-radius:16px;min-width:90px;text-align:center"></div>
+        </div>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-math" style="font-size:1.8rem;padding:14px 30px" onclick="answerGL('&lt;')">&lt;</button>
+          <button class="btn btn-math" style="font-size:1.8rem;padding:14px 30px" onclick="answerGL('=')">=</button>
+          <button class="btn btn-math" style="font-size:1.8rem;padding:14px 30px" onclick="answerGL('&gt;')">&gt;</button>
+        </div>
+        <div id="glResult" class="result-box" style="margin-top:12px"></div>
+      </div>
+
+      <div id="glEnd" style="display:none;text-align:center;padding:20px">
+        <div id="glEndEmoji" style="font-size:4rem;margin-bottom:10px">🎉</div>
+        <div id="glEndMsg" style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px"></div>
+        <button class="btn btn-math" onclick="startGL()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 6: QUICK DOTS ══ -->
+  <div class="activity-card">
+    <div class="act-header math-hdr">
+      <span class="act-num">6</span>
+      Quick Dots ⚡
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Dots will flash for just 1.5 seconds — count them fast and type the number! This trains your brain to count at lightning speed! ⚡</p>
+
+      <div id="qdStart" style="text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px">⚡</div>
+        <button class="btn btn-math" onclick="startQD()">Start! ⚡</button>
+      </div>
+
+      <div id="qdGame" style="display:none">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-weight:800;font-size:.95rem">
+          <span>Round <span id="qdNum">1</span>/6</span>
+          <span>✅ <span id="qdScoreEl">0</span> correct</span>
+        </div>
+        <div id="qdArena" style="background:#1F2937;border-radius:16px;height:190px;position:relative;margin:10px 0;overflow:hidden;display:flex;align-items:center;justify-content:center">
+          <div id="qdReady" style="color:#fff;font-family:'Fredoka One',cursive;font-size:1.4rem;text-align:center;padding:10px">Ready? Dots will flash!</div>
+          <div id="qdDots" style="display:none;position:absolute;inset:10px;pointer-events:none"></div>
+        </div>
+        <div id="qdAnswer" style="display:none;text-align:center;margin-top:12px">
+          <p style="font-family:'Fredoka One',cursive;font-size:1.1rem;margin-bottom:10px">How many dots did you see? 🤔</p>
+          <div style="display:flex;gap:10px;justify-content:center;align-items:center">
+            <input type="number" class="ans-input" id="qdAns" min="1" max="20" placeholder="?">
+            <button class="btn btn-math" onclick="checkQD()">Check! ✅</button>
+          </div>
+          <div id="qdResult" class="result-box" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div id="qdEnd" style="display:none;text-align:center;padding:20px">
+        <div id="qdEndEmoji" style="font-size:4rem;margin-bottom:10px">🧠</div>
+        <div id="qdEndMsg" style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px"></div>
+        <button class="btn btn-math" onclick="startQD()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 7: MISSING NUMBER ══ -->
+  <div class="activity-card">
+    <div class="act-header math-hdr">
+      <span class="act-num">7</span>
+      Missing Number 🔍
+    </div>
+    <div class="act-body">
+      <p class="act-desc">One number is hiding in each equation! Find the missing number that makes the equation true. This is your first step into algebra! 🔍</p>
+
+      <div id="mnQ">
+        <div style="text-align:center;margin-bottom:14px;font-family:'Fredoka One',cursive;font-size:1.1rem">
+          Problem <span id="mnNum">1</span>/8 &nbsp;✅ <span id="mnScoreEl">0</span>
+        </div>
+        <div class="quiz-q" id="mnEq" style="font-size:2.2rem;letter-spacing:3px;margin:18px 0"></div>
+        <div style="display:flex;gap:10px;justify-content:center;align-items:center;margin-bottom:12px">
+          <input type="number" class="ans-input" id="mnAns" placeholder="?" style="width:100px">
+          <button class="btn btn-math" onclick="checkMN()">Check! ✅</button>
+        </div>
+        <div id="mnResult" class="result-box"></div>
+        <div id="mnNext" style="display:none;text-align:center;margin-top:10px">
+          <button class="btn btn-success" onclick="nextMN()">Next ➡️</button>
+        </div>
+      </div>
+
+      <div id="mnDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="mnDoneEmoji">🏆</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="mnDoneMsg"></div>
+        <button class="btn btn-math" onclick="resetMN()">Try Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="main-footer">🌟 Keep Learning, Keep Growing! Made with ❤️ for curious kids everywhere 🌍</footer>
+
+<script src="app.js"></script>
+<script>
+// ── NUMBER NINJA QUIZ ──
+const OPS = [
+  (a,b) => ({ q:`${a} + ${b}`, ans: a+b }),
+  (a,b) => ({ q:`${a+b} - ${b}`, ans: a }),
+  (a,b) => ({ q:`${a} × ${b}`, ans: a*b }),
+];
+
+let qIdx=0, qScore=0, qTotal=10, qTimer=null, qTimerVal=10, answered=false;
+
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function genQuestion(){
+  const opIdx = randInt(0, OPS.length-1);
+  let a,b;
+  if(opIdx===0){ a=randInt(1,12); b=randInt(1,12); }
+  else if(opIdx===1){ a=randInt(1,12); b=randInt(1,12); }
+  else { a=randInt(2,6); b=randInt(2,6); }
+  return OPS[opIdx](a,b);
+}
+
+function genOptions(ans){
+  const opts = new Set([ans]);
+  while(opts.size<4){
+    const off = randInt(1,6);
+    const w = ans + (Math.random()>.5 ? off : -off);
+    if(w>=0 && w<=100) opts.add(w);
+  }
+  return [...opts].sort(()=>Math.random()-.5);
+}
+
+let curQ;
+function startQuiz(){
+  qIdx=0; qScore=0; answered=false;
+  document.getElementById('quizStart').style.display='none';
+  document.getElementById('quizEnd').style.display='none';
+  document.getElementById('quizGame').style.display='block';
+  showQ();
+}
+
+function showQ(){
+  if(qIdx>=qTotal){ endQuiz(); return; }
+  answered=false;
+  curQ = genQuestion();
+  const opts = genOptions(curQ.ans);
+  document.getElementById('qNum').textContent = qIdx+1;
+  document.getElementById('qScore').textContent = qScore;
+  document.getElementById('quizQ').textContent = curQ.q + ' = ?';
+  const optsEl = document.getElementById('quizOpts');
+  optsEl.innerHTML = opts.map(o=>`<button class="quiz-opt" onclick="answerQ(this,${o},${curQ.ans})">${o}</button>`).join('');
+  startTimer();
+}
+
+function startTimer(){
+  qTimerVal=10;
+  clearInterval(qTimer);
+  const timerEl = document.getElementById('qTimer');
+  timerEl.classList.remove('urgent');
+  timerEl.textContent = '⏱ 10';
+  qTimer=setInterval(()=>{
+    qTimerVal--;
+    timerEl.textContent='⏱ '+qTimerVal;
+    if(qTimerVal<=3) timerEl.classList.add('urgent');
+    if(qTimerVal<=0){
+      clearInterval(qTimer);
+      if(!answered){
+        markWrong();
+        setTimeout(()=>{ qIdx++; showQ(); },1000);
+      }
+    }
+  },1000);
+}
+
+function answerQ(btn, chosen, correct){
+  if(answered) return;
+  answered=true;
+  clearInterval(qTimer);
+  const optsEl=document.getElementById('quizOpts');
+  [...optsEl.children].forEach(b=>b.disabled=true);
+  if(chosen===correct){
+    btn.classList.add('correct');
+    qScore++;
+    beep('correct');
+  } else {
+    btn.classList.add('wrong');
+    beep('wrong');
+    [...optsEl.children].forEach(b=>{ if(+b.textContent===correct) b.classList.add('correct'); });
+  }
+  setTimeout(()=>{ qIdx++; showQ(); },900);
+}
+
+function markWrong(){
+  beep('wrong');
+  document.getElementById('quizQ').style.color='#FF6B6B';
+  setTimeout(()=>{ document.getElementById('quizQ').style.color=''; },500);
+}
+
+function endQuiz(){
+  clearInterval(qTimer);
+  document.getElementById('quizGame').style.display='none';
+  document.getElementById('quizEnd').style.display='block';
+  let stars=0, emoji='😢', msg='';
+  if(qScore>=8){ stars=3; emoji='🏆'; msg=`Incredible! ${qScore}/10 correct! You're a Math Ninja!`; }
+  else if(qScore>=6){ stars=2; emoji='🌟'; msg=`Great job! ${qScore}/10 correct! Keep practicing!`; }
+  else if(qScore>=4){ stars=1; emoji='👍'; msg=`Good try! ${qScore}/10 correct! You're getting better!`; }
+  else { emoji='💪'; msg=`${qScore}/10 correct! Don't give up — try again!`; }
+  document.getElementById('quizEndEmoji').textContent=emoji;
+  document.getElementById('quizEndMsg').textContent=msg;
+  document.getElementById('quizStars').textContent='⭐'.repeat(stars) || '(No stars this time — try again!)';
+  if(stars>0){ addStars(stars,'math'); confetti(); }
+}
+
+// ── BUBBLE POP ──
+let bubbleCount=0, poppedCount=0, bubblesDone=false;
+
+function startBubbles(){
+  document.getElementById('bubbleStart').style.display='none';
+  document.getElementById('bubbleGame').style.display='block';
+  bubbleCount = randInt(5,12);
+  poppedCount = 0;
+  bubblesDone = false;
+  document.getElementById('bubbleQuestion').style.display='none';
+  document.getElementById('bubbleResult').className='result-box';
+  const field = document.getElementById('bubbleField');
+  field.innerHTML='';
+  const colors=['#FF6B6B','#4ECDC4','#FFD700','#A78BFA','#34D399','#F59E0B','#FF9FF3','#87CEEB'];
+  for(let i=0;i<bubbleCount;i++){
+    setTimeout(()=>{
+      const b=document.createElement('div');
+      b.className='bubble';
+      const size=50+randInt(0,25);
+      b.style.cssText=`
+        left:${randInt(5,75)}%;
+        bottom:0;
+        width:${size}px;height:${size}px;
+        background:${colors[i%colors.length]};
+        animation-duration:${3+Math.random()*3}s;
+        animation-delay:0s;
+      `;
+      b.textContent=i+1;
+      b.onclick=()=>popBubble(b);
+      field.appendChild(b);
+    }, i*400);
+  }
+  // Auto-show question after all bubbles launched + float time
+  setTimeout(()=>{
+    bubblesDone=true;
+    document.getElementById('bubbleQuestion').style.display='block';
+    document.getElementById('bubbleAns').value='';
+    document.getElementById('bubbleAns').focus();
+  }, bubbleCount*400 + 4000);
+}
+
+function popBubble(b){
+  if(b.classList.contains('popped')) return;
+  b.classList.add('pop');
+  beep('pop');
+  poppedCount++;
+  setTimeout(()=>b.remove(),250);
+  if(poppedCount===bubbleCount && !bubblesDone){
+    bubblesDone=true;
+    setTimeout(()=>{
+      document.getElementById('bubbleQuestion').style.display='block';
+      document.getElementById('bubbleAns').value='';
+      document.getElementById('bubbleAns').focus();
+    },500);
+  }
+}
+
+function checkBubbles(){
+  const ans=parseInt(document.getElementById('bubbleAns').value);
+  const res=document.getElementById('bubbleResult');
+  if(ans===bubbleCount){
+    res.className='result-box show ok';
+    res.innerHTML='<span class="r-emoji">🎉</span><span class="r-txt">Correct! There were '+bubbleCount+' bubbles! You counted perfectly!</span>';
+    addStars(2,'math');
+    beep('win');
+    confetti();
+  } else {
+    res.className='result-box show err';
+    res.innerHTML='<span class="r-emoji">🤔</span><span class="r-txt">Not quite! There were '+bubbleCount+' bubbles. Try again!</span>';
+    beep('wrong');
+    // reset
+    setTimeout(startBubbles, 1500);
+  }
+}
+
+// ── FILL THE PATTERN ──
+const patterns=[
+  { seq:[2,4,6,null,null], ans:[8,10], rule:'Count by 2s! Add 2 each time.' },
+  { seq:[1,3,5,7,null,null], ans:[9,11], rule:'Odd numbers! Add 2 each time.' },
+  { seq:[5,10,15,null,null], ans:[20,25], rule:'Count by 5s! Add 5 each time.' },
+  { seq:[20,18,16,null,null], ans:[14,12], rule:'Count down by 2s! Subtract 2 each time.' },
+  { seq:[1,2,4,8,null,null], ans:[16,32], rule:'Doubling! Multiply by 2 each time.' },
+];
+let pIdx=0, pScore=0;
+
+function renderPattern(){
+  const p=patterns[pIdx];
+  document.getElementById('patNum').textContent=pIdx+1;
+  document.getElementById('patternResult').className='result-box';
+  document.getElementById('patternNext').style.display='none';
+  const row=document.getElementById('patternRow');
+  row.innerHTML=p.seq.map((v,i)=>{
+    if(v===null) return `<div class="p-item p-blank"><input type="number" class="p-input-${i}" id="pi${i}" style="width:52px;height:52px;border:none;background:none;text-align:center;font-size:1.4rem;font-weight:800;font-family:Nunito,sans-serif;outline:none;border-radius:7px;" placeholder="?"></div>`;
+    return `<div class="p-item">${v}</div>`;
+  }).join('<span style="font-size:1.5rem;color:#9CA3AF">→</span>');
+  // focus first blank
+  setTimeout(()=>{ const fi=p.seq.findIndex(v=>v===null); if(fi>=0) document.getElementById('pi'+fi).focus(); },100);
+}
+
+function checkPattern(){
+  const p=patterns[pIdx];
+  const blanks=p.seq.map((v,i)=>v===null?i:-1).filter(i=>i>=0);
+  let allCorrect=true;
+  blanks.forEach((bi,j)=>{
+    const inp=document.getElementById('pi'+bi);
+    if(!inp) return;
+    if(parseInt(inp.value)!==p.ans[j]){ allCorrect=false; inp.style.background='#FEE2E2'; }
+    else inp.style.background='#D1FAE5';
+  });
+  const res=document.getElementById('patternResult');
+  if(allCorrect){
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">🎉</span><span class="r-txt">Correct! ${p.rule}</span>`;
+    pScore++;
+    addStars(1,'math');
+    beep('correct');
+    if(pIdx<patterns.length-1){
+      document.getElementById('patternNext').style.display='block';
+    } else {
+      setTimeout(()=>{
+        document.getElementById('patternArea').style.display='none';
+        document.getElementById('patternDone').style.display='block';
+        const msg=pScore>=4?`Amazing! ${pScore}/5 patterns solved! You're a Pattern Pro! 🏆`:`Good effort! ${pScore}/5 solved! Try again to improve!`;
+        document.getElementById('patternDoneMsg').textContent=msg;
+        if(pScore>=4){ confetti(); addStars(2,'math'); }
+      },1200);
+    }
+  } else {
+    res.className='result-box show err';
+    res.innerHTML='<span class="r-emoji">🤔</span><span class="r-txt">Not quite! Look at the numbers again and try to find the rule.</span>';
+    beep('wrong');
+  }
+}
+
+function nextPattern(){ pIdx++; renderPattern(); }
+function resetPatterns(){ pIdx=0; pScore=0; document.getElementById('patternDone').style.display='none'; document.getElementById('patternArea').style.display='block'; renderPattern(); }
+renderPattern();
+
+// ── MULTIPLICATION MAGIC ──
+const mulProblems=[{a:2,b:3},{a:3,b:4},{a:2,b:5},{a:4,b:4},{a:3,b:5},{a:2,b:6},{a:4,b:3},{a:5,b:5}];
+const mulColors=['#FF6B6B','#4ECDC4','#FFD700','#A78BFA','#34D399','#F59E0B','#FF9FF3','#87CEEB'];
+let mulIdx=0, mulScore2=0, mulAnswered=false;
+
+function startMul(){
+  mulIdx=0; mulScore2=0; mulAnswered=false;
+  document.getElementById('mulStart').style.display='none';
+  document.getElementById('mulEnd').style.display='none';
+  document.getElementById('mulGame').style.display='block';
+  showMul();
+}
+function showMul(){
+  if(mulIdx>=mulProblems.length){ endMul(); return; }
+  mulAnswered=false;
+  const {a,b}=mulProblems[mulIdx];
+  document.getElementById('mulNum').textContent=mulIdx+1;
+  document.getElementById('mulScore').textContent=mulScore2;
+  const dotsEl=document.getElementById('mulDots');
+  dotsEl.innerHTML='';
+  const col=mulColors[mulIdx%mulColors.length];
+  for(let r=0;r<a;r++){
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;gap:8px;justify-content:center';
+    for(let c=0;c<b;c++){
+      const d=document.createElement('div');
+      d.style.cssText=`width:22px;height:22px;border-radius:50%;background:${col};box-shadow:0 2px 6px rgba(0,0,0,.2)`;
+      row.appendChild(d);
+    }
+    dotsEl.appendChild(row);
+  }
+  document.getElementById('mulQ').textContent=`${a} × ${b} = ?`;
+  const ans=a*b;
+  document.getElementById('mulOpts').innerHTML=genOptions(ans).map(o=>
+    `<button class="quiz-opt" onclick="answerMul(this,${o},${ans})">${o}</button>`
+  ).join('');
+}
+function answerMul(btn,chosen,correct){
+  if(mulAnswered) return; mulAnswered=true;
+  document.querySelectorAll('#mulOpts .quiz-opt').forEach(b=>b.disabled=true);
+  if(chosen===correct){ btn.classList.add('correct'); mulScore2++; beep('correct'); }
+  else { btn.classList.add('wrong'); beep('wrong'); document.querySelectorAll('#mulOpts .quiz-opt').forEach(b=>{ if(+b.textContent===correct) b.classList.add('correct'); }); }
+  setTimeout(()=>{ mulIdx++; showMul(); },900);
+}
+function endMul(){
+  document.getElementById('mulGame').style.display='none';
+  document.getElementById('mulEnd').style.display='block';
+  const s=mulScore2>=7?3:mulScore2>=5?2:mulScore2>=3?1:0;
+  document.getElementById('mulEndEmoji').textContent=s>=3?'🏆':s>=2?'🌟':'💪';
+  document.getElementById('mulEndMsg').textContent=`${mulScore2}/8 correct! ${s>=3?'Times Table Master! 🏆':s>=2?'Great multiplication!':'Keep practising the times tables!'}`;
+  if(s>0){ addStars(s,'math'); confetti(); }
+}
+
+// ── GREATER OR LESS ──
+let glIdx=0,glScore=0,glA=0,glB=0,glAnswered=false;
+function startGL(){
+  glIdx=0; glScore=0; glAnswered=false;
+  document.getElementById('glStart').style.display='none';
+  document.getElementById('glEnd').style.display='none';
+  document.getElementById('glGame').style.display='block';
+  showGL();
+}
+function showGL(){
+  if(glIdx>=10){ endGL(); return; }
+  glAnswered=false;
+  glA=randInt(1,99); glB=randInt(1,99);
+  if(Math.random()<0.15) glB=glA;
+  document.getElementById('glNum').textContent=glIdx+1;
+  document.getElementById('glScoreEl').textContent=glScore;
+  document.getElementById('glLeft').textContent=glA;
+  document.getElementById('glRight').textContent=glB;
+  document.getElementById('glResult').className='result-box';
+  document.querySelectorAll('#glGame .btn-math').forEach(b=>b.disabled=false);
+}
+function answerGL(sym){
+  if(glAnswered) return; glAnswered=true;
+  document.querySelectorAll('#glGame .btn-math').forEach(b=>b.disabled=true);
+  const correct=glA<glB?'<':glA>glB?'>':'=';
+  const res=document.getElementById('glResult');
+  if(sym===correct){
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">${glA} ${correct} ${glB} — correct!</span>`;
+    glScore++; beep('correct');
+  } else {
+    const word=correct==='<'?'less than':correct==='>'?'greater than':'equal to';
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">${glA} is ${word} ${glB}, so the answer is "${correct}"!</span>`;
+    beep('wrong');
+  }
+  glIdx++;
+  setTimeout(showGL,1200);
+}
+function endGL(){
+  document.getElementById('glGame').style.display='none';
+  document.getElementById('glEnd').style.display='block';
+  const s=glScore>=9?3:glScore>=7?2:glScore>=5?1:0;
+  document.getElementById('glEndEmoji').textContent=s>=3?'🏆':s>=2?'🌟':'💪';
+  document.getElementById('glEndMsg').textContent=`${glScore}/10 correct! ${s>=3?'Number Champion! 🏆':s>=2?'Great comparing!':'Keep practising!'}`;
+  if(s>0){ addStars(s,'math'); confetti(); }
+}
+
+// ── QUICK DOTS ──
+const qdCounts=[4,7,5,11,8,13];
+let qdIdx=0,qdScoreVal=0,qdCurrent=0;
+function startQD(){
+  qdIdx=0; qdScoreVal=0;
+  document.getElementById('qdStart').style.display='none';
+  document.getElementById('qdEnd').style.display='none';
+  document.getElementById('qdGame').style.display='block';
+  showQD();
+}
+function showQD(){
+  if(qdIdx>=qdCounts.length){ endQD(); return; }
+  const shuffled=[...qdCounts].sort(()=>Math.random()-.5);
+  qdCurrent=shuffled[qdIdx];
+  document.getElementById('qdNum').textContent=qdIdx+1;
+  document.getElementById('qdScoreEl').textContent=qdScoreVal;
+  document.getElementById('qdAnswer').style.display='none';
+  document.getElementById('qdResult').className='result-box';
+  document.getElementById('qdAns').value='';
+  const ready=document.getElementById('qdReady');
+  const dots=document.getElementById('qdDots');
+  ready.style.display='block'; dots.style.display='none'; dots.innerHTML='';
+  let count=3;
+  ready.textContent='Get ready... '+count;
+  const cd=setInterval(()=>{
+    count--;
+    if(count>0){ ready.textContent='Get ready... '+count; }
+    else {
+      clearInterval(cd);
+      ready.style.display='none';
+      const cols=['#FF6B6B','#4ECDC4','#FFD700','#A78BFA','#34D399'];
+      for(let i=0;i<qdCurrent;i++){
+        const d=document.createElement('div');
+        d.style.cssText=`position:absolute;width:24px;height:24px;border-radius:50%;background:${cols[i%cols.length]};left:${randInt(4,86)}%;top:${randInt(8,74)}%;box-shadow:0 2px 6px rgba(0,0,0,.3)`;
+        dots.appendChild(d);
+      }
+      dots.style.display='block';
+      setTimeout(()=>{
+        dots.style.display='none';
+        ready.textContent='Time\'s up! How many dots?';
+        ready.style.display='block';
+        document.getElementById('qdAnswer').style.display='block';
+        setTimeout(()=>document.getElementById('qdAns').focus(),50);
+      },1500);
+    }
+  },800);
+}
+function checkQD(){
+  const ans=parseInt(document.getElementById('qdAns').value);
+  const res=document.getElementById('qdResult');
+  if(ans===qdCurrent){
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">Correct! There were ${qdCurrent} dots! Great visual memory!</span>`;
+    qdScoreVal++; beep('correct');
+  } else {
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">🤔</span><span class="r-txt">There were ${qdCurrent} dots! You said ${ans}. Close!</span>`;
+    beep('wrong');
+  }
+  qdIdx++;
+  setTimeout(showQD,1500);
+}
+function endQD(){
+  document.getElementById('qdGame').style.display='none';
+  document.getElementById('qdEnd').style.display='block';
+  const s=qdScoreVal>=5?3:qdScoreVal>=3?2:qdScoreVal>=1?1:0;
+  document.getElementById('qdEndEmoji').textContent=s>=3?'🧠':s>=2?'⚡':'👍';
+  document.getElementById('qdEndMsg').textContent=`${qdScoreVal}/6 correct! ${s>=3?'Lightning Brain! You counted at super-speed!':s>=2?'Great visual memory!':'Practice makes perfect!'}`;
+  if(s>0){ addStars(s,'math'); if(s>=2) confetti(); }
+}
+
+// ── MISSING NUMBER ──
+const mnProblems=[
+  {eq:'___ + 3 = 7',   ans:4,  full:'4 + 3 = 7'},
+  {eq:'5 + ___ = 12',  ans:7,  full:'5 + 7 = 12'},
+  {eq:'10 - ___ = 4',  ans:6,  full:'10 - 6 = 4'},
+  {eq:'___ - 5 = 8',   ans:13, full:'13 - 5 = 8'},
+  {eq:'3 × ___ = 15',  ans:5,  full:'3 × 5 = 15'},
+  {eq:'___ × 4 = 20',  ans:5,  full:'5 × 4 = 20'},
+  {eq:'___ + 9 = 17',  ans:8,  full:'8 + 9 = 17'},
+  {eq:'20 - ___ = 13', ans:7,  full:'20 - 7 = 13'},
+];
+let mnIdx=0,mnScore=0,mnAnswered=false;
+function renderMN(){
+  if(mnIdx>=mnProblems.length){ endMN(); return; }
+  mnAnswered=false;
+  document.getElementById('mnNum').textContent=mnIdx+1;
+  document.getElementById('mnScoreEl').textContent=mnScore;
+  document.getElementById('mnEq').textContent=mnProblems[mnIdx].eq;
+  document.getElementById('mnAns').value='';
+  document.getElementById('mnResult').className='result-box';
+  document.getElementById('mnNext').style.display='none';
+  setTimeout(()=>document.getElementById('mnAns').focus(),80);
+}
+function checkMN(){
+  if(mnAnswered) return;
+  const val=parseInt(document.getElementById('mnAns').value);
+  const p=mnProblems[mnIdx];
+  const res=document.getElementById('mnResult');
+  if(isNaN(val)){ res.className='result-box show err'; res.innerHTML='<span class="r-emoji">🤔</span><span class="r-txt">Please type a number!</span>'; return; }
+  mnAnswered=true;
+  if(val===p.ans){
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">Correct! ${p.full} ✓</span>`;
+    mnScore++; beep('correct');
+    document.getElementById('mnScoreEl').textContent=mnScore;
+    if(mnIdx<mnProblems.length-1) document.getElementById('mnNext').style.display='block';
+    else setTimeout(endMN,1000);
+  } else {
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">Not quite! The answer is ${p.ans}. ${p.full} ✓</span>`;
+    beep('wrong');
+    setTimeout(()=>{ mnAnswered=false; mnIdx++; renderMN(); },1600);
+  }
+}
+function nextMN(){ mnIdx++; renderMN(); }
+function endMN(){
+  document.getElementById('mnQ').style.display='none';
+  document.getElementById('mnDone').style.display='block';
+  const s=mnScore>=7?3:mnScore>=5?2:mnScore>=3?1:0;
+  document.getElementById('mnDoneEmoji').textContent=s>=3?'🏆':s>=2?'⭐':'💪';
+  document.getElementById('mnDoneMsg').textContent=`${mnScore}/8 correct! ${s>=3?'Algebra Star! 🏆':s>=2?'Great number detective work!':'Keep practising!'}`;
+  if(s>0){ addStars(s,'math'); confetti(); }
+}
+function resetMN(){
+  mnIdx=0; mnScore=0;
+  document.getElementById('mnQ').style.display='block';
+  document.getElementById('mnDone').style.display='none';
+  renderMN();
+}
+renderMN();
+</script>
+</body>
+</html>

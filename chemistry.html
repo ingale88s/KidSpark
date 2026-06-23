@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chemistry Zone 🧪 – KidSpark</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .swatch-red{background:radial-gradient(circle at 35% 35%,#FF8888,#CC0000)}
+  .swatch-yellow{background:radial-gradient(circle at 35% 35%,#FFE066,#FFB800)}
+  .swatch-blue{background:radial-gradient(circle at 35% 35%,#66B2FF,#0050CC)}
+  .test-tube{display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;margin:6px;transition:transform .2s}
+  .test-tube:hover{transform:scale(1.08)}
+  .tube-body{width:36px;height:80px;border:3px solid #4B5563;border-radius:0 0 18px 18px;border-top:none;position:relative;overflow:hidden;background:#fff}
+  .tube-fill{position:absolute;bottom:0;left:0;right:0;border-radius:0 0 15px 15px;transition:height .5s,background .5s}
+  .tube-top{width:44px;height:12px;background:#9CA3AF;border-radius:4px 4px 0 0}
+  .tube-label{font-size:.75rem;font-weight:800;margin-top:6px;text-align:center}
+  .mixing-area{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+  .plus-sign{font-size:1.8rem;color:#9CA3AF;font-weight:900}
+  .equals-sign{font-size:1.8rem;color:#9CA3AF;font-weight:900}
+  .result-globe{width:90px;height:90px;border-radius:50%;border:4px solid #E5E7EB;transition:background .5s,box-shadow .4s;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.4);text-align:center}
+  .matter-controls{display:flex;align-items:center;gap:10px;margin:14px 0;flex-wrap:wrap}
+  .temp-display{font-family:'Fredoka One',cursive;font-size:1.8rem;min-width:80px;text-align:center}
+  .state-badge{padding:8px 18px;border-radius:20px;font-family:'Fredoka One',cursive;font-size:1.1rem;color:#fff;display:inline-block;transition:background .4s}
+  canvas#matterCanvas{display:block;max-width:100%;border-radius:12px}
+</style>
+</head>
+<body>
+
+<div class="bg-stars" id="bgStars"></div>
+
+<header class="main-header">
+  <div class="header-content">
+    <span class="mascot-icon">🤖</span>
+    <div>
+      <div class="header-title">KidSpark! ⚡</div>
+      <div class="header-sub">Chemistry Zone 🧪</div>
+    </div>
+    <div class="stars-pill">⭐ <span id="totalStars">0</span> Stars</div>
+  </div>
+</header>
+
+<a href="index.html" class="nav-back">← Back to Home</a>
+
+<section class="subject-hero">
+  <span class="big-icon">🧪</span>
+  <h2>Chemistry Zone!</h2>
+  <p>Mix things together and see what happens — that's chemistry!</p>
+</section>
+
+<div class="activities">
+
+  <!-- ══ ACTIVITY 1: COLOR MIXER ══ -->
+  <div class="activity-card">
+    <div class="act-header chemistry-hdr">
+      <span class="act-num">1</span>
+      Color Mixing Lab 🎨
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Artists and scientists both mix colors! Click the colored circles to turn them ON or OFF and see what new color is created. Can you make green? Orange? Purple?</p>
+
+      <div class="color-lab">
+        <div class="color-swatches">
+          <div class="swatch swatch-red" id="swRed" onclick="toggleColor('red')" title="Red">RED</div>
+          <div class="swatch swatch-yellow" id="swYellow" onclick="toggleColor('yellow')" title="Yellow">YELLOW</div>
+          <div class="swatch swatch-blue" id="swBlue" onclick="toggleColor('blue')" title="Blue">BLUE</div>
+        </div>
+
+        <div class="mixing-area">
+          <div id="mixLabel1" style="font-size:.9rem;font-weight:700;color:var(--mid)">Click colors above</div>
+          <span class="equals-sign">=</span>
+          <div class="result-globe" id="resultGlobe" style="background:#F3F4F6;color:#9CA3AF">?</div>
+        </div>
+
+        <div id="colorName" style="font-family:'Fredoka One',cursive;font-size:1.5rem;text-align:center;margin:4px 0;min-height:36px"></div>
+        <div id="colorFact" style="font-size:.88rem;color:var(--mid);text-align:center;max-width:340px;min-height:20px"></div>
+      </div>
+
+      <div class="info-box" style="margin-top:16px">
+        <h4>🎨 Primary Colors</h4>
+        <p>Red, Yellow, and Blue are called <b>PRIMARY colors</b>. You can mix them to make almost any other color! All the paint colors in your art set started as just these three!</p>
+      </div>
+
+      <div id="colorStar" style="display:none;text-align:center;margin-top:12px">
+        <span style="font-size:1.2rem">⭐ You discovered a new color! Keep exploring!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 2: STATES OF MATTER ══ -->
+  <div class="activity-card">
+    <div class="act-header chemistry-hdr">
+      <span class="act-num">2</span>
+      States of Matter ❄️💧💨
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Everything around you is made of tiny particles called molecules! How fast they move depends on temperature. Watch what happens to water molecules as you heat or cool them!</p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:center">
+        <canvas id="matterCanvas" width="220" height="220"></canvas>
+        <div style="flex:1;min-width:200px">
+          <div class="matter-controls">
+            <span style="font-size:1.5rem">🌡️</span>
+            <input type="range" class="slider" id="tempSlider" min="-30" max="130" value="20" oninput="updateMatter(this.value)" style="flex:1">
+          </div>
+          <div class="temp-display" id="tempDisplay">20°C</div>
+          <div style="margin-top:8px"><span class="state-badge" id="stateBadge" style="background:#667eea">💧 Liquid</span></div>
+          <div style="margin-top:14px;font-size:.9rem;color:var(--mid);line-height:1.55" id="stateDesc">At 20°C, water is a liquid. The molecules move freely but stay close together.</div>
+          <div style="display:flex;gap:6px;margin-top:12px;font-size:.82rem;flex-wrap:wrap">
+            <button class="btn btn-sm" style="background:#87CEEB;color:#1F2937" onclick="setTemp(-10)">❄️ -10°C Ice</button>
+            <button class="btn btn-sm" style="background:#00B4D8;color:#fff" onclick="setTemp(20)">💧 20°C Water</button>
+            <button class="btn btn-sm" style="background:#FF6B6B;color:#fff" onclick="setTemp(110)">♨️ 110°C Steam</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box" style="margin-top:16px">
+        <h4>🧊💧💨 The Three States</h4>
+        <p><b>Solid</b> (ICE): molecules barely move, locked in place. <b>Liquid</b> (WATER): molecules flow around freely. <b>Gas</b> (STEAM): molecules fly everywhere super fast! The same H₂O becomes all three depending on temperature!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 3: ACID OR BASE ══ -->
+  <div class="activity-card">
+    <div class="act-header chemistry-hdr">
+      <span class="act-num">3</span>
+      Acid, Base, or Neutral? 🔴🔵
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Scientists use something called pH to measure if a substance is an ACID (sour, like lemon juice), a BASE (slippery, like soap), or NEUTRAL (like pure water). Click each substance, then choose where it belongs!</p>
+
+      <div id="abGame">
+        <p style="font-weight:700;margin-bottom:12px">Click a substance to select it, then click the right zone:</p>
+        <div class="substances-row" id="substancesRow">
+          <button class="substance-btn" onclick="selectSub(this,'lemon','acid')">🍋 Lemon</button>
+          <button class="substance-btn" onclick="selectSub(this,'soap','base')">🧴 Soap</button>
+          <button class="substance-btn" onclick="selectSub(this,'water','neutral')">💧 Water</button>
+          <button class="substance-btn" onclick="selectSub(this,'baking','base')">🥄 Baking Soda</button>
+          <button class="substance-btn" onclick="selectSub(this,'vinegar','acid')">🍶 Vinegar</button>
+          <button class="substance-btn" onclick="selectSub(this,'milk','neutral')">🥛 Milk</button>
+        </div>
+        <div class="zones" id="zonesArea">
+          <div class="zone zone-acid" onclick="placeInZone('acid')"><div style="font-size:1.8rem">🔴</div><div>ACID</div><div style="font-size:.75rem;opacity:.7">Sour &amp; tangy</div><div id="acid-placed" style="font-size:.8rem;margin-top:6px;min-height:20px"></div></div>
+          <div class="zone zone-neutral" onclick="placeInZone('neutral')"><div style="font-size:1.8rem">⚪</div><div>NEUTRAL</div><div style="font-size:.75rem;opacity:.7">Not acid or base</div><div id="neutral-placed" style="font-size:.8rem;margin-top:6px;min-height:20px"></div></div>
+          <div class="zone zone-base" onclick="placeInZone('base')"><div style="font-size:1.8rem">🔵</div><div>BASE</div><div style="font-size:.75rem;opacity:.7">Slippery &amp; bitter</div><div id="base-placed" style="font-size:.8rem;margin-top:6px;min-height:20px"></div></div>
+        </div>
+        <div id="abResult" class="result-box"></div>
+        <div id="abProgress" style="font-weight:700;font-size:.95rem;margin-top:10px;color:var(--mid)">Place all 6 substances to earn your stars! (0/6 placed)</div>
+      </div>
+
+      <div class="info-box" style="margin-top:14px">
+        <h4>🔬 pH Scale</h4>
+        <p>pH 0-6 = Acid (lemon juice is pH 2!). pH 7 = Neutral (pure water). pH 8-14 = Base (baking soda is pH 9). Scientists use special paper called litmus paper that changes color to test pH!</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="main-footer">🌟 Keep Learning, Keep Growing! Made with ❤️ for curious kids everywhere 🌍</footer>
+
+<script src="app.js"></script>
+<script>
+// ── COLOR MIXER ──
+const active = {red:false, yellow:false, blue:false};
+const colorStates = {
+  '':        {color:'#F3F4F6', name:'', fact:'', text:'?', textColor:'#9CA3AF'},
+  'red':     {color:'#CC2200', name:'Red 🔴', fact:'Red is the color of fire, strawberries, and stop signs!', text:'RED'},
+  'yellow':  {color:'#FFB800', name:'Yellow 🟡', fact:'Yellow is the color of sunshine — it is the brightest primary color!', text:'YELLOW'},
+  'blue':    {color:'#0050CC', name:'Blue 🔵', fact:'Blue is the most common favorite color in the world!', text:'BLUE'},
+  'redyellow':   {color:'#FF7700', name:'Orange 🟠', fact:'Red + Yellow = Orange! Oranges, pumpkins, and sunsets are orange!', text:'ORANGE'},
+  'redblue':     {color:'#8800CC', name:'Purple 🟣', fact:'Red + Blue = Purple! Purple used to be the rarest and most expensive color!', text:'PURPLE'},
+  'yellowblue':  {color:'#009900', name:'Green 🟢', fact:'Yellow + Blue = Green! Most plants are green because of chlorophyll!', text:'GREEN'},
+  'redyellowblue': {color:'#6B3A00', name:'Brown 🟤', fact:'Red + Yellow + Blue = Brown! All three primary colors mixed make brown!', text:'BROWN'},
+};
+let colorStarGiven=false;
+
+function toggleColor(c){
+  active[c]=!active[c];
+  document.getElementById('sw'+c.charAt(0).toUpperCase()+c.slice(1)).classList.toggle('active',active[c]);
+  updateColor();
+}
+
+function updateColor(){
+  const key=[active.red?'red':'',active.yellow?'yellow':'',active.blue?'blue':''].filter(Boolean).sort().join('');
+  const cs=colorStates[key]||colorStates[''];
+  const globe=document.getElementById('resultGlobe');
+  globe.style.background=cs.color;
+  globe.style.boxShadow=cs.name?`0 0 20px ${cs.color}66`:'none';
+  globe.textContent=cs.text||'?';
+  globe.style.color=cs.textColor||'#fff';
+  document.getElementById('colorName').textContent=cs.name;
+  document.getElementById('colorFact').textContent=cs.fact;
+  const active_keys=Object.values(active).filter(Boolean).length;
+  document.getElementById('mixLabel1').textContent=active_keys===0?'Click colors above':active_keys===1?'Add another color!':'Mixing...';
+  if(cs.name&&!colorStarGiven){ colorStarGiven=true; addStars(1,'chemistry'); document.getElementById('colorStar').style.display='block'; beep('correct'); }
+}
+
+// ── STATES OF MATTER ──
+const canvas=document.getElementById('matterCanvas');
+const ctx=canvas.getContext('2d');
+let atoms=[], temp=20, animId;
+
+const N_ATOMS=24;
+function initAtoms(){
+  atoms=[];
+  for(let i=0;i<N_ATOMS;i++){
+    atoms.push({
+      x:40+Math.random()*140, y:40+Math.random()*140,
+      vx:(Math.random()-.5)*1.5, vy:(Math.random()-.5)*1.5,
+      color:`hsl(${200+Math.random()*60},70%,60%)`
+    });
+  }
+}
+initAtoms();
+
+function getState(t){ return t<0?'solid':t<100?'liquid':'gas'; }
+
+function step(){
+  const state=getState(temp);
+  const speed=state==='solid'?.3:state==='liquid'?1.2:3.5;
+  const spread=state==='solid'?40:state==='liquid'?85:200;
+  const cx=canvas.width/2, cy=canvas.height/2;
+
+  atoms.forEach((a,i)=>{
+    if(state==='solid'){
+      const cols=5, rows=Math.ceil(N_ATOMS/cols);
+      const gx=cx-(cols-1)*14+((i%cols)*28);
+      const gy=cy-(rows-1)*14+(Math.floor(i/cols)*28);
+      a.x+=(gx-a.x)*.12+(Math.random()-.5)*1.5;
+      a.y+=(gy-a.y)*.12+(Math.random()-.5)*1.5;
+    } else {
+      a.vx+=(Math.random()-.5)*.2; a.vy+=(Math.random()-.5)*.2;
+      const spd=Math.hypot(a.vx,a.vy);
+      if(spd>speed){ a.vx=a.vx/spd*speed; a.vy=a.vy/spd*speed; }
+      a.x+=a.vx; a.y+=a.vy;
+      const margin=state==='gas'?10:40, maxX=canvas.width-margin, maxY=canvas.height-margin;
+      if(a.x<margin){a.x=margin;a.vx=Math.abs(a.vx);}
+      if(a.x>maxX){a.x=maxX;a.vx=-Math.abs(a.vx);}
+      if(a.y<margin){a.y=margin;a.vy=Math.abs(a.vy);}
+      if(a.y>maxY){a.y=maxY;a.vy=-Math.abs(a.vy);}
+    }
+  });
+
+  const bgColors={solid:'#EEF2FF',liquid:'#EFF6FF',gas:'#F0FDF4'};
+  ctx.fillStyle=bgColors[state]; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Bonds in solid/liquid
+  if(state!=='gas'){
+    ctx.strokeStyle=state==='solid'?'rgba(100,120,220,.25)':'rgba(100,180,220,.15)';
+    ctx.lineWidth=1.5;
+    atoms.forEach((a,i)=>{
+      atoms.forEach((b,j)=>{
+        if(j<=i) return;
+        const d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<(state==='solid'?36:28)){
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      });
+    });
+  }
+
+  atoms.forEach(a=>{
+    ctx.beginPath(); ctx.arc(a.x,a.y,7,0,Math.PI*2);
+    ctx.fillStyle=a.color; ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.6)'; ctx.lineWidth=1.5; ctx.stroke();
+  });
+
+  // Label
+  const labels={solid:'🧊 SOLID (Ice)',liquid:'💧 LIQUID (Water)',gas:'💨 GAS (Steam)'};
+  ctx.fillStyle='rgba(0,0,0,.55)';
+  ctx.font='bold 13px Nunito,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(labels[state],canvas.width/2,canvas.height-8);
+
+  animId=requestAnimationFrame(step);
+}
+step();
+
+const stateDescs={
+  solid:'❄️ SOLID! Below 0°C, water freezes into ICE. The molecules are locked in a tight grid and can barely move — that\'s why ice is hard!',
+  liquid:'💧 LIQUID! Between 0°C and 100°C, water is a liquid. Molecules move freely and can flow around each other.',
+  gas:'💨 GAS! Above 100°C, water boils into STEAM. Molecules move super fast and spread out in all directions!'
+};
+const stateBgColors={solid:'#667eea',liquid:'#00B4D8',gas:'#FF6B6B'};
+
+function updateMatter(val){
+  temp=parseInt(val);
+  document.getElementById('tempDisplay').textContent=temp+'°C';
+  const state=getState(temp);
+  document.getElementById('stateBadge').textContent={solid:'🧊 Solid',liquid:'💧 Liquid',gas:'💨 Gas'}[state];
+  document.getElementById('stateBadge').style.background=stateBgColors[state];
+  document.getElementById('stateDesc').textContent=stateDescs[state];
+}
+function setTemp(t){ document.getElementById('tempSlider').value=t; updateMatter(t); }
+
+// ── ACID OR BASE ──
+let selectedSub=null, selectedBtn=null, placedCount=0, abStarGiven=false;
+const correctAnswers={lemon:'acid',soap:'base',water:'neutral',baking:'base',vinegar:'acid',milk:'neutral'};
+const subLabels={lemon:'🍋 Lemon',soap:'🧴 Soap',water:'💧 Water',baking:'🥄 Baking Soda',vinegar:'🍶 Vinegar',milk:'🥛 Milk'};
+const placed={acid:[],neutral:[],base:[]};
+
+function selectSub(btn,id,correct){
+  if(btn.classList.contains('correct')) return;
+  if(selectedBtn){ selectedBtn.classList.remove('selected'); }
+  selectedSub={id,correct};
+  selectedBtn=btn;
+  btn.classList.add('selected');
+}
+
+function placeInZone(zone){
+  if(!selectedSub) return;
+  const {id,correct}=selectedSub;
+  const btn=selectedBtn;
+  selectedSub=null; selectedBtn=null;
+  btn.classList.remove('selected');
+
+  const res=document.getElementById('abResult');
+  if(zone===correct){
+    btn.classList.add('correct');
+    placed[zone].push(subLabels[id]);
+    document.getElementById(zone+'-placed').textContent=placed[zone].join(', ');
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">${subLabels[id]} is an ${zone==='acid'?'ACID':zone==='base'?'BASE':'NEUTRAL substance'}! Correct!</span>`;
+    beep('correct');
+    placedCount++;
+    document.getElementById('abProgress').textContent=`Keep going! (${placedCount}/6 placed)`;
+    if(placedCount===6 && !abStarGiven){
+      abStarGiven=true;
+      addStars(3,'chemistry');
+      confetti();
+      celebrate('🧪','Chemistry Expert!','You sorted all 6 substances correctly! You earned 3 stars! ⭐⭐⭐');
+    }
+  } else {
+    btn.classList.add('wrong');
+    res.className='result-box show err';
+    const expZone=correct==='acid'?'ACID zone 🔴':correct==='base'?'BASE zone 🔵':'NEUTRAL zone ⚪';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">${subLabels[id]} belongs in the ${expZone}. Try again!</span>`;
+    beep('wrong');
+    setTimeout(()=>{ btn.classList.remove('wrong'); },600);
+  }
+}
+</script>
+</body>
+</html>

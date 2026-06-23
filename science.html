@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Science Lab 🔬 – KidSpark</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-stars" id="bgStars"></div>
+
+<header class="main-header">
+  <div class="header-content">
+    <span class="mascot-icon">🤖</span>
+    <div>
+      <div class="header-title">KidSpark! ⚡</div>
+      <div class="header-sub">Science Lab 🔬</div>
+    </div>
+    <div class="stars-pill">⭐ <span id="totalStars">0</span> Stars</div>
+  </div>
+</header>
+
+<a href="index.html" class="nav-back">← Back to Home</a>
+
+<section class="subject-hero">
+  <span class="big-icon">🔬</span>
+  <h2>Science Lab!</h2>
+  <p>Discover how the world works through cool experiments!</p>
+</section>
+
+<div class="activities">
+
+  <!-- ══ ACTIVITY 1: VOLCANO ══ -->
+  <div class="activity-card">
+    <div class="act-header science-hdr">
+      <span class="act-num">1</span>
+      Volcano Lab 🌋
+    </div>
+    <div class="act-body">
+      <p class="act-desc">A real science experiment! Add baking soda, then vinegar, and watch the volcano ERUPT! In real life, these two ingredients make carbon dioxide gas (CO₂) that makes it bubble and overflow — just like lava!</p>
+
+      <div class="steps-track">
+        <div class="step-dot" id="sd0"></div>
+        <div class="step-dot" id="sd1"></div>
+        <div class="step-dot" id="sd2"></div>
+        <div class="step-dot" id="sd3"></div>
+      </div>
+
+      <div id="volcanoScene" style="text-align:center">
+        <!-- SVG Volcano -->
+        <svg id="volSvg" width="300" height="260" viewBox="0 0 300 260" style="max-width:100%">
+          <!-- Sky -->
+          <rect width="300" height="260" fill="#87CEEB"/>
+          <!-- Clouds -->
+          <ellipse cx="60" cy="30" rx="40" ry="18" fill="white" opacity=".8"/>
+          <ellipse cx="85" cy="25" rx="30" ry="16" fill="white" opacity=".8"/>
+          <ellipse cx="230" cy="40" rx="35" ry="15" fill="white" opacity=".7"/>
+          <!-- Ground -->
+          <rect y="220" width="300" height="40" fill="#5D4037"/>
+          <!-- Volcano body -->
+          <polygon points="150,40 60,220 240,220" fill="#795548"/>
+          <polygon points="150,40 90,220 210,220" fill="#6D4C41"/>
+          <!-- Crater rim -->
+          <ellipse cx="150" cy="50" rx="30" ry="12" fill="#5D4037"/>
+          <!-- Crater inside -->
+          <ellipse cx="150" cy="48" rx="22" ry="9" fill="#3E2723" id="craterInside"/>
+          <!-- Lava streams (hidden initially) -->
+          <g id="lavaGroup" opacity="0">
+            <rect x="138" y="30" width="24" height="100" rx="5" fill="#FF6B00" id="lavaMain"/>
+            <ellipse cx="150" cy="25" rx="20" ry="15" fill="#FF4500"/>
+            <!-- Lava drips -->
+            <ellipse cx="120" cy="80" rx="8" ry="6" fill="#FF6B00" opacity=".8"/>
+            <ellipse cx="175" cy="95" rx="6" ry="5" fill="#FF4500" opacity=".8"/>
+            <ellipse cx="108" cy="130" rx="7" ry="5" fill="#FF6B00" opacity=".7"/>
+            <ellipse cx="185" cy="120" rx="8" ry="6" fill="#FF4500" opacity=".7"/>
+          </g>
+          <!-- Smoke (hidden) -->
+          <g id="smokeGroup" opacity="0">
+            <circle cx="150" cy="0" r="18" fill="#9E9E9E" opacity=".6"/>
+            <circle cx="135" cy="-15" r="14" fill="#BDBDBD" opacity=".5"/>
+            <circle cx="165" cy="-20" r="16" fill="#9E9E9E" opacity=".5"/>
+          </g>
+          <!-- Ingredient labels -->
+          <text id="bakingLabel" x="150" y="190" text-anchor="middle" font-family="Nunito,sans-serif" font-size="13" font-weight="800" fill="#FFF" opacity="0">🧂 Baking Soda!</text>
+          <text id="vinegarLabel" x="150" y="170" text-anchor="middle" font-family="Nunito,sans-serif" font-size="13" font-weight="800" fill="#FFF" opacity="0">🍶 Vinegar!</text>
+        </svg>
+
+        <div id="volcanoControls" style="margin-top:10px">
+          <button class="btn btn-science step-btn" id="step1Btn" onclick="volcanoStep(1)">Step 1: Add Baking Soda 🧂</button>
+          <button class="btn btn-science step-btn" id="step2Btn" onclick="volcanoStep(2)" disabled>Step 2: Add Vinegar 🍶</button>
+          <button class="btn btn-science step-btn" id="step3Btn" onclick="volcanoStep(3)" disabled>Step 3: Watch it ERUPT! 🌋</button>
+          <button class="btn btn-success step-btn" id="resetVolBtn" onclick="resetVolcano()" style="display:none">Reset 🔄</button>
+        </div>
+      </div>
+
+      <div class="info-box" id="volcanoInfo" style="display:none">
+        <h4>🧪 What's happening?</h4>
+        <p id="volcanoInfoText"></p>
+      </div>
+
+      <div id="volcanoStar" style="display:none;text-align:center;margin-top:14px">
+        <span style="font-size:1.5rem">⭐⭐ You earned 2 stars for completing the volcano experiment!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 2: PLANT DOCTOR ══ -->
+  <div class="activity-card">
+    <div class="act-header science-hdr">
+      <span class="act-num">2</span>
+      Plant Doctor 🌿
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Be the plant doctor! Adjust the water and sunlight to keep the plant healthy. Too much or too little of either will make it sick. Find the perfect balance!</p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center">
+        <div class="plant-scene">
+          <span class="plant-emoji" id="plantEmoji">🌱</span>
+          <div class="soil">🌍 Soil</div>
+        </div>
+        <div style="flex:1;min-width:220px">
+          <div class="plant-status" id="plantStatus">Adjust water and sunlight!</div>
+          <div class="slider-row">
+            <span class="slider-label">💧 Water</span>
+            <input type="range" class="slider" id="waterSlider" min="0" max="100" value="10" oninput="updatePlant()">
+            <span id="waterVal" style="font-weight:800;min-width:36px">10</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">☀️ Sunlight</span>
+            <input type="range" class="slider" id="sunSlider" min="0" max="100" value="10" oninput="updatePlant()">
+            <span id="sunVal" style="font-weight:800;min-width:36px">10</span>
+          </div>
+          <div class="info-box" style="margin-top:16px">
+            <h4>💡 Hint</h4>
+            <p id="plantHint">Try moving the sliders to see what happens!</p>
+          </div>
+          <div id="plantStar" style="display:none;margin-top:10px;text-align:center">
+            <span style="font-size:1.2rem">⭐⭐ Perfect! Plant is thriving! +2 stars!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 3: DAY & NIGHT ══ -->
+  <div class="activity-card">
+    <div class="act-header science-hdr">
+      <span class="act-num">3</span>
+      Day &amp; Night 🌍☀️
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Why do we have day and night? The Earth spins around once every 24 hours! When your side faces the Sun, it's daytime. When it faces away, it's night! Spin the Earth and answer the quiz!</p>
+
+      <div style="text-align:center">
+        <div style="display:inline-flex;align-items:center;gap:25px;margin:20px 0;flex-wrap:wrap;justify-content:center">
+          <div style="text-align:center">
+            <div style="font-size:3rem;animation:sunGlow 2s infinite">☀️</div>
+            <div style="font-size:.8rem;font-weight:700;color:#F59E0B">SUN</div>
+          </div>
+          <div class="earth-scene" onclick="spinEarth()" id="earthScene" style="cursor:pointer;width:160px;height:160px">
+            <div class="earth-circle" id="earthCircle" style="width:140px;height:140px;top:10px;left:10px">
+              <div class="night-half"></div>
+              <div class="day-half"></div>
+            </div>
+            <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;z-index:2">🌍</span>
+            <!-- A B markers -->
+            <span id="markerA" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-weight:900;font-size:.9rem;color:#FFD700;text-shadow:0 0 4px #000;z-index:3">A</span>
+            <span id="markerB" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-weight:900;font-size:.9rem;color:#4ECDC4;text-shadow:0 0 4px #000;z-index:3">B</span>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:3rem">🌌</div>
+            <div style="font-size:.8rem;font-weight:700;color:#6B7280">SPACE</div>
+          </div>
+        </div>
+
+        <p style="font-weight:800;color:var(--mid);margin-bottom:12px">👆 Click the Earth to spin it!</p>
+
+        <div id="dayNightStatus" style="font-family:'Fredoka One',cursive;font-size:1.2rem;margin-bottom:16px;min-height:30px"></div>
+
+        <!-- Quiz -->
+        <div id="dnQuiz">
+          <p style="font-weight:800;margin-bottom:12px;font-size:1rem">Now answer these questions:</p>
+          <div id="dnQ1" style="background:#F3F4F6;border-radius:12px;padding:14px;margin-bottom:12px">
+            <p style="font-weight:700;margin-bottom:10px">Point <span style="color:#FFD700;font-weight:900">A</span> (yellow) faces the Sun. Is it <b>day or night</b> at point A?</p>
+            <div style="display:flex;gap:10px;justify-content:center">
+              <button class="btn btn-science" onclick="checkDN('A','day',this)">☀️ Day</button>
+              <button class="btn" style="background:#1a1a2e;color:#fff" onclick="checkDN('A','night',this)">🌙 Night</button>
+            </div>
+            <div id="dnResult1" class="result-box"></div>
+          </div>
+          <div id="dnQ2" style="background:#F3F4F6;border-radius:12px;padding:14px">
+            <p style="font-weight:700;margin-bottom:10px">Point <span style="color:#4ECDC4;font-weight:900">B</span> (cyan) faces away from the Sun. Is it <b>day or night</b> at point B?</p>
+            <div style="display:flex;gap:10px;justify-content:center">
+              <button class="btn btn-science" onclick="checkDN('B','day',this)">☀️ Day</button>
+              <button class="btn" style="background:#1a1a2e;color:#fff" onclick="checkDN('B','night',this)">🌙 Night</button>
+            </div>
+            <div id="dnResult2" class="result-box"></div>
+          </div>
+        </div>
+        <div id="dnDone" style="display:none;margin-top:16px">
+          <div style="font-size:2rem">⭐⭐ Great job! You earned 2 stars!</div>
+        </div>
+      </div>
+
+      <div class="info-box" style="margin-top:16px">
+        <h4>🔭 Cool Fact!</h4>
+        <p>Earth takes exactly 24 hours to spin once — that's why a day is 24 hours long! At the same time, Earth is also orbiting around the Sun, which takes 365 days — that's one year!</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="main-footer">🌟 Keep Learning, Keep Growing! Made with ❤️ for curious kids everywhere 🌍</footer>
+
+<script src="app.js"></script>
+<script>
+// ── VOLCANO ──
+let vStep = 0;
+const vInfos = [
+  '',
+  'Baking soda (sodium bicarbonate) is inside the volcano! It looks like a white powder.',
+  'Vinegar (acetic acid) is being poured in. Get ready for a reaction!',
+  'BOOM! The baking soda and vinegar react to make CO₂ gas (carbon dioxide) — the same gas you breathe out! The gas makes all those bubbles and pushes the lava up and over!'
+];
+const stepDots = [0,1,2,3];
+
+function markSteps(){
+  for(let i=0;i<=3;i++){
+    const d=document.getElementById('sd'+i);
+    if(i<vStep) d.className='step-dot done';
+    else if(i===vStep) d.className='step-dot active';
+    else d.className='step-dot';
+  }
+}
+
+function volcanoStep(n){
+  vStep=n;
+  markSteps();
+  const lava=document.getElementById('lavaGroup');
+  const smoke=document.getElementById('smokeGroup');
+  const info=document.getElementById('volcanoInfo');
+  const infoTxt=document.getElementById('volcanoInfoText');
+  info.style.display='block';
+  infoTxt.textContent=vInfos[n];
+
+  if(n===1){
+    document.getElementById('bakingLabel').setAttribute('opacity','1');
+    document.getElementById('step1Btn').disabled=true;
+    document.getElementById('step2Btn').disabled=false;
+  } else if(n===2){
+    document.getElementById('vinegarLabel').setAttribute('opacity','1');
+    document.getElementById('step2Btn').disabled=true;
+    document.getElementById('step3Btn').disabled=false;
+  } else if(n===3){
+    document.getElementById('step3Btn').disabled=true;
+    lava.setAttribute('opacity','1');
+    smoke.setAttribute('opacity','1');
+    createParticles();
+    document.getElementById('resetVolBtn').style.display='inline-flex';
+    document.getElementById('volcanoStar').style.display='block';
+    addStars(2,'science');
+    beep('win');
+    confetti();
+  }
+}
+
+function createParticles(){
+  const svg=document.getElementById('volSvg');
+  const colors=['#FF6B00','#FF4500','#FFD700','#FF0000'];
+  for(let i=0;i<20;i++){
+    setTimeout(()=>{
+      const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx',140+Math.random()*20);
+      circle.setAttribute('cy',40);
+      circle.setAttribute('r',4+Math.random()*4);
+      circle.setAttribute('fill',colors[Math.floor(Math.random()*colors.length)]);
+      circle.setAttribute('opacity','1');
+      svg.appendChild(circle);
+      let py=40, vx=(Math.random()-.5)*4, vy=-2-Math.random()*3;
+      const anim=setInterval(()=>{
+        vy+=0.15; py+=vy;
+        const cx=parseFloat(circle.getAttribute('cx'))+vx;
+        circle.setAttribute('cx',cx);
+        circle.setAttribute('cy',py);
+        circle.setAttribute('opacity',Math.max(0,1-py/(-100)));
+        if(py>300||cx<0||cx>300){ clearInterval(anim); circle.remove(); }
+      },30);
+    },i*80);
+  }
+}
+
+function resetVolcano(){
+  vStep=0; markSteps();
+  document.getElementById('lavaGroup').setAttribute('opacity','0');
+  document.getElementById('smokeGroup').setAttribute('opacity','0');
+  document.getElementById('bakingLabel').setAttribute('opacity','0');
+  document.getElementById('vinegarLabel').setAttribute('opacity','0');
+  document.getElementById('step1Btn').disabled=false;
+  document.getElementById('step2Btn').disabled=true;
+  document.getElementById('step3Btn').disabled=true;
+  document.getElementById('resetVolBtn').style.display='none';
+  document.getElementById('volcanoInfo').style.display='none';
+  document.getElementById('volcanoStar').style.display='none';
+}
+
+// ── PLANT DOCTOR ──
+let plantStarGiven=false;
+function updatePlant(){
+  const w=+document.getElementById('waterSlider').value;
+  const s=+document.getElementById('sunSlider').value;
+  document.getElementById('waterVal').textContent=w;
+  document.getElementById('sunVal').textContent=s;
+  let emoji='🌱', status='', hint='';
+
+  if(w<15){
+    emoji='🥀'; status='😰 Too dry! The plant is dying of thirst!';
+    hint='The plant needs more water! Move the Water slider to the right.';
+  } else if(w>85){
+    emoji='😵'; status='💦 Too much water! The roots are drowning!';
+    hint='Too much water is bad! Even plants can drown. Try less water.';
+  } else if(s<15){
+    emoji='😟'; status='🌫️ Too dark! No sunlight means no food for the plant!';
+    hint='Plants make food from sunlight (photosynthesis). Give it more sun!';
+  } else if(s>90 && w<40){
+    emoji='🔥'; status='☀️ Too hot and dry! The plant is scorched!';
+    hint='Too much sun with not enough water burns the plant! Balance both.';
+  } else if(w>=35 && w<=75 && s>=30 && s<=80){
+    emoji='🌳'; status='🌟 Perfect! The plant is thriving!';
+    hint='Great job! Water 35-75 and Sunlight 30-80 is the sweet spot!';
+    if(!plantStarGiven){ plantStarGiven=true; addStars(2,'science'); confetti(); document.getElementById('plantStar').style.display='block'; beep('win'); }
+  } else if(w>=20 && s>=20){
+    emoji='🌿'; status='😊 Pretty good! The plant is doing OK.';
+    hint='It\'s surviving but not thriving. Try to find the perfect balance!';
+  } else {
+    emoji='🌱'; status='🤔 Hmm, the plant needs better conditions.';
+    hint='Try adjusting both sliders to find the best combination!';
+  }
+
+  document.getElementById('plantEmoji').textContent=emoji;
+  document.getElementById('plantStatus').textContent=status;
+  document.getElementById('plantHint').textContent=hint;
+}
+
+// ── DAY & NIGHT ──
+let earthRotation=0, dnQ1done=false, dnQ2done=false;
+function spinEarth(){
+  earthRotation+=90;
+  document.getElementById('earthCircle').style.transform=`rotate(${earthRotation}deg)`;
+  const status=document.getElementById('dayNightStatus');
+  const msgs=['🌍 Spinning...','🌅 Morning side facing Sun!','🌞 Full daytime!','🌆 Evening... Night is coming!','🌙 Nighttime on this side!'];
+  status.textContent=msgs[Math.floor(earthRotation/90)%msgs.length];
+}
+function checkDN(pt, ans, btn){
+  const correct = (pt==='A')?'day':'night';
+  const resId = pt==='A'?'dnResult1':'dnResult2';
+  const res=document.getElementById(resId);
+  const allBtns=btn.parentElement.querySelectorAll('button');
+  allBtns.forEach(b=>b.disabled=true);
+  if(ans===correct){
+    btn.style.outline='3px solid #34D399';
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">Correct! Point ${pt} faces ${correct==='day'?'the Sun (day!)':'away from the Sun (night!)'}.</span>`;
+    beep('correct');
+    if(pt==='A') dnQ1done=true; else dnQ2done=true;
+    if(dnQ1done&&dnQ2done){ addStars(2,'science'); document.getElementById('dnDone').style.display='block'; confetti(); }
+  } else {
+    btn.style.outline='3px solid #FF6B6B';
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">Not quite! Point ${pt} is on the ${correct==='day'?'side facing the Sun, so it\'s DAY!':'side facing away, so it\'s NIGHT!'}.</span>`;
+    beep('wrong');
+  }
+}
+
+// Call on load so initial wilted state shows
+updatePlant();
+</script>
+</body>
+</html>

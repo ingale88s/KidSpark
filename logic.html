@@ -240,6 +240,150 @@
     </div>
   </div>
 
+  <!-- ══ ACTIVITY 8: CODE BREAKER ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">8</span>
+      Code Breaker 🔐
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Secret agents use codes! In this cipher, every letter has a number: A=1, B=2, C=3 … Z=26. Decode the secret word by figuring out which letters match the numbers!</p>
+
+      <div id="cbKey" style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:10px 0;padding:10px;background:#F3F4F6;border-radius:12px"></div>
+
+      <div id="cbGame">
+        <div style="text-align:center;margin-bottom:12px">
+          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem">Word <span id="cbNum">1</span>/6</span>
+          &nbsp; <span style="font-weight:700;color:var(--mid)">✅ <span id="cbScore">0</span></span>
+        </div>
+        <div style="text-align:center;margin:20px 0">
+          <div id="cbCode" style="font-family:'Fredoka One',cursive;font-size:2rem;letter-spacing:4px;color:#667eea;margin-bottom:16px"></div>
+          <div id="cbLetterBoxes" style="display:flex;gap:8px;justify-content:center;margin-bottom:16px"></div>
+          <div style="display:flex;gap:10px;justify-content:center;align-items:center">
+            <input type="text" id="cbAns" class="ans-input" placeholder="?" style="width:140px;text-transform:uppercase;font-size:1.3rem" maxlength="6">
+            <button class="btn btn-logic" onclick="checkCB()">Decode! 🔐</button>
+          </div>
+        </div>
+        <div id="cbResult" class="result-box"></div>
+      </div>
+
+      <div id="cbDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="cbDoneEmoji">🏆</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="cbDoneMsg"></div>
+        <button class="btn btn-logic" onclick="resetCB()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 9: MIRROR MATCH ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">9</span>
+      Mirror Match 🪞
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Look at the sequence of emojis on the left. Which option shows it perfectly MIRRORED (flipped left-to-right)? Think carefully — mirrors reverse left and right!</p>
+
+      <div id="mmGame">
+        <div style="text-align:center;margin-bottom:12px">
+          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem">Puzzle <span id="mmNum">1</span>/6</span>
+          &nbsp; <span style="font-weight:700;color:var(--mid)">✅ <span id="mmScore">0</span></span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:20px;justify-content:center;flex-wrap:wrap;margin:16px 0">
+          <div>
+            <div style="font-size:.8rem;font-weight:800;color:var(--mid);text-align:center;margin-bottom:6px">ORIGINAL</div>
+            <div id="mmOriginal" style="display:flex;gap:8px;background:#EDE9FE;padding:12px 16px;border-radius:12px;border:3px solid #A78BFA"></div>
+          </div>
+          <div style="font-size:2rem;color:#A78BFA">🪞</div>
+          <div>
+            <div style="font-size:.8rem;font-weight:800;color:var(--mid);text-align:center;margin-bottom:6px">MIRROR = ?</div>
+            <div style="display:flex;gap:8px;background:#F3F4F6;padding:12px 16px;border-radius:12px;border:3px dashed #C7D2FE">
+              <span style="font-size:2rem;color:#C7D2FE">❓ ❓ ❓</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:.88rem;font-weight:700;color:var(--mid);text-align:center;margin-bottom:10px">Click the correct mirror:</div>
+        <div id="mmOptions" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:440px;margin:0 auto"></div>
+        <div id="mmResult" class="result-box" style="margin-top:12px"></div>
+      </div>
+
+      <div id="mmDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="mmDoneEmoji">🪞</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="mmDoneMsg"></div>
+        <button class="btn btn-logic" onclick="resetMM()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 10: WHAT'S MY RULE? ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">10</span>
+      What's My Rule? 🧐
+    </div>
+    <div class="act-body">
+      <p class="act-desc">Look at the IN group and the OUT group. Figure out the SECRET RULE that decides which items belong IN! Then pick the rule from the choices below.</p>
+
+      <div id="ruleGame">
+        <div style="text-align:center;margin-bottom:12px">
+          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem">Round <span id="ruleNum">1</span>/6</span>
+          &nbsp; <span style="font-weight:700;color:var(--mid)">✅ <span id="ruleScore">0</span></span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0">
+          <div style="background:#D1FAE5;border:3px solid #34D399;border-radius:14px;padding:14px;text-align:center">
+            <div style="font-family:'Fredoka One',cursive;font-size:.9rem;color:#065F46;margin-bottom:10px">✅ IN GROUP</div>
+            <div id="ruleIn" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
+          </div>
+          <div style="background:#FEE2E2;border:3px solid #FF6B6B;border-radius:14px;padding:14px;text-align:center">
+            <div style="font-family:'Fredoka One',cursive;font-size:.9rem;color:#881337;margin-bottom:10px">❌ OUT GROUP</div>
+            <div id="ruleOut" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
+          </div>
+        </div>
+
+        <div style="font-size:.9rem;font-weight:700;text-align:center;color:var(--mid);margin-bottom:10px">What is the rule?</div>
+        <div id="ruleOpts" style="display:flex;flex-direction:column;gap:10px;max-width:400px;margin:0 auto"></div>
+        <div id="ruleResult" class="result-box" style="margin-top:12px"></div>
+      </div>
+
+      <div id="ruleDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="ruleDoneEmoji">🧐</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="ruleDoneMsg"></div>
+        <button class="btn btn-logic" onclick="resetRule()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY 11: STEP BY STEP ══ -->
+  <div class="activity-card">
+    <div class="act-header logic-hdr">
+      <span class="act-num">11</span>
+      Step by Step 📋
+    </div>
+    <div class="act-body">
+      <p class="act-desc">The steps of each process are all mixed up! Click them in the CORRECT ORDER from first to last. Think it through before you click!</p>
+
+      <div id="stepsGame">
+        <div style="text-align:center;margin-bottom:12px">
+          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem">Process <span id="stepsNum">1</span>/4</span>
+          &nbsp; <span style="font-weight:700;color:var(--mid)">✅ <span id="stepsScore">0</span></span>
+        </div>
+        <div id="stepsTitle" style="font-family:'Fredoka One',cursive;font-size:1.3rem;text-align:center;margin:10px 0"></div>
+        <div id="stepsProgress" style="display:flex;gap:6px;justify-content:center;margin:10px 0"></div>
+        <div id="stepsItems" style="display:flex;flex-direction:column;gap:10px;margin:14px 0"></div>
+        <div id="stepsResult" class="result-box"></div>
+      </div>
+
+      <div id="stepsDone" style="display:none;text-align:center;padding:20px">
+        <div style="font-size:3.5rem;margin-bottom:12px" id="stepsDoneEmoji">📋</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:14px" id="stepsDoneMsg"></div>
+        <button class="btn btn-logic" onclick="resetSteps()">Play Again! 🔄</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ══ ACTIVITY 7: BRAIN TEASERS ══ -->
   <div class="activity-card">
     <div class="act-header logic-hdr">
@@ -818,6 +962,318 @@ function endBT(){
   document.getElementById('btDoneMsg').textContent=`${btScoreVal}/8 correct! ${s>=3?'Master Thinker! Einstein would be impressed! 🧠':s>=2?'Super smart — great lateral thinking!':'These are hard! Well done for trying!'}`;
   if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
 }
+
+// ══ CODE BREAKER ══
+const cbWords=[
+  {word:'CAT',  code:'3 - 1 - 20'},
+  {word:'DOG',  code:'4 - 15 - 7'},
+  {word:'SUN',  code:'19 - 21 - 14'},
+  {word:'FUN',  code:'6 - 21 - 14'},
+  {word:'MATH', code:'13 - 1 - 20 - 8'},
+  {word:'STAR', code:'19 - 20 - 1 - 18'},
+];
+let cbIdx=0, cbScoreVal=0;
+
+(function buildCBKey(){
+  const el=document.getElementById('cbKey');
+  for(let i=1;i<=26;i++){
+    const span=document.createElement('span');
+    span.style.cssText='background:#fff;border:1.5px solid #C7D2FE;border-radius:6px;padding:3px 6px;font-size:.72rem;font-weight:700;font-family:Nunito,sans-serif;color:#4338CA;white-space:nowrap';
+    span.textContent=String.fromCharCode(64+i)+'='+i;
+    el.appendChild(span);
+  }
+})();
+
+function showCB(){
+  const w=cbWords[cbIdx];
+  document.getElementById('cbNum').textContent=cbIdx+1;
+  document.getElementById('cbScore').textContent=cbScoreVal;
+  document.getElementById('cbCode').textContent=w.code;
+  document.getElementById('cbLetterBoxes').innerHTML=w.word.split('').map(()=>
+    `<span style="width:36px;height:36px;border-radius:8px;border:2.5px dashed #A78BFA;display:inline-flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1.3rem;color:#7C3AED;background:#F5F3FF"></span>`
+  ).join('');
+  document.getElementById('cbAns').value='';
+  document.getElementById('cbResult').className='result-box';
+  document.getElementById('cbAns').focus();
+}
+function checkCB(){
+  const ans=document.getElementById('cbAns').value.trim().toUpperCase();
+  const correct=cbWords[cbIdx].word;
+  const res=document.getElementById('cbResult');
+  if(ans===correct){
+    document.getElementById('cbLetterBoxes').querySelectorAll('span').forEach((el,i)=>{
+      el.textContent=correct[i]; el.style.borderStyle='solid'; el.style.borderColor='#34D399'; el.style.background='#D1FAE5';
+    });
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">🔓</span><span class="r-txt">Cracked it! The secret word is <strong>${correct}</strong>! 🎉</span>`;
+    cbScoreVal++; beep('correct');
+  } else {
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">Not quite! Check the key above — each number = a letter. Try again!</span>`;
+    beep('wrong'); return;
+  }
+  cbIdx++;
+  setTimeout(()=>{ if(cbIdx>=cbWords.length) endCB(); else showCB(); },1600);
+}
+function endCB(){
+  document.getElementById('cbGame').style.display='none';
+  document.getElementById('cbDone').style.display='block';
+  const s=cbScoreVal>=6?3:cbScoreVal>=4?2:cbScoreVal>=2?1:0;
+  document.getElementById('cbDoneEmoji').textContent=s>=3?'🕵️':s>=2?'🔐':'🔏';
+  document.getElementById('cbDoneMsg').textContent=`${cbScoreVal}/6 decoded! ${s>=3?'Master Spy! You cracked every code! 🕵️':s>=2?'Great decoding skills!':'Keep practising the cipher!'}`;
+  if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
+}
+function resetCB(){
+  cbIdx=0; cbScoreVal=0;
+  document.getElementById('cbGame').style.display='block';
+  document.getElementById('cbDone').style.display='none';
+  showCB();
+}
+document.getElementById('cbAns').addEventListener('keydown',e=>{ if(e.key==='Enter') checkCB(); });
+showCB();
+
+// ══ MIRROR MATCH ══
+const mmPuzzles=[
+  {seq:['🔴','🟡','🔵']},
+  {seq:['⭐','🌙','☀️']},
+  {seq:['🐶','🐱','🐟']},
+  {seq:['🍎','🍌','🍓']},
+  {seq:['🚗','🚌','✈️']},
+  {seq:['🟥','🟦','🟩']},
+];
+let mmIdx=0, mmScoreVal=0;
+
+function allPerms(arr){
+  if(arr.length<=1) return [[...arr]];
+  return arr.flatMap((v,i)=>allPerms([...arr.slice(0,i),...arr.slice(i+1)]).map(p=>[v,...p]));
+}
+function showMM(){
+  if(mmIdx>=mmPuzzles.length){ endMM(); return; }
+  const p=mmPuzzles[mmIdx];
+  document.getElementById('mmNum').textContent=mmIdx+1;
+  document.getElementById('mmScore').textContent=mmScoreVal;
+  document.getElementById('mmResult').className='result-box';
+  document.getElementById('mmOriginal').innerHTML=p.seq.map(e=>`<span style="font-size:2.2rem">${e}</span>`).join('');
+
+  const mirror=[...p.seq].reverse();
+  const mirrorKey=mirror.join('|');
+  const origKey=p.seq.join('|');
+  const perms=allPerms(p.seq).map(a=>a.join('|'));
+  const wrongKeys=[...new Set(perms)].filter(k=>k!==mirrorKey&&k!==origKey);
+  const opts=[mirrorKey,...wrongKeys.sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+
+  document.getElementById('mmOptions').innerHTML=opts.map((key,i)=>
+    `<button onclick="answerMM(this,'${key}','${mirrorKey}')"
+      style="padding:14px 10px;border-radius:12px;background:#F3F4F6;border:3px solid transparent;
+             cursor:pointer;font-size:1.8rem;letter-spacing:4px;transition:all .2s;font-family:Nunito,sans-serif;"
+      onmouseover="this.style.borderColor='#A78BFA';this.style.background='#EDE9FE'"
+      onmouseout="if(!this.disabled){this.style.borderColor='transparent';this.style.background='#F3F4F6'}"
+    >${key.split('|').join(' ')}</button>`
+  ).join('');
+}
+function answerMM(btn,chosen,correct){
+  document.querySelectorAll('#mmOptions button').forEach(b=>b.disabled=true);
+  const res=document.getElementById('mmResult');
+  if(chosen===correct){
+    btn.style.cssText+=';border-color:#34D399;background:#D1FAE5';
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">🪞</span><span class="r-txt">Perfect mirror! Left and right are swapped!</span>`;
+    mmScoreVal++; beep('correct');
+  } else {
+    btn.style.cssText+=';border-color:#FF6B6B;background:#FEE2E2';
+    document.querySelectorAll('#mmOptions button').forEach(b=>{
+      if(b.getAttribute('onclick').includes("'"+correct+"'")){
+        b.style.cssText+=';border-color:#34D399;background:#D1FAE5';
+      }
+    });
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">Not quite! A mirror flips LEFT↔RIGHT — the order reverses!</span>`;
+    beep('wrong');
+  }
+  mmIdx++;
+  setTimeout(showMM,1600);
+}
+function endMM(){
+  document.getElementById('mmGame').style.display='none';
+  document.getElementById('mmDone').style.display='block';
+  const s=mmScoreVal>=6?3:mmScoreVal>=4?2:mmScoreVal>=2?1:0;
+  document.getElementById('mmDoneEmoji').textContent=s>=3?'🪞':s>=2?'🌟':'💪';
+  document.getElementById('mmDoneMsg').textContent=`${mmScoreVal}/6 correct! ${s>=3?'Mirror Master! 🪞':s>=2?'Sharp eye for reflections!':'Keep thinking left-right!'}`;
+  if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
+}
+function resetMM(){
+  mmIdx=0; mmScoreVal=0;
+  document.getElementById('mmGame').style.display='block';
+  document.getElementById('mmDone').style.display='none';
+  showMM();
+}
+showMM();
+
+// ══ WHAT'S MY RULE? ══
+const ruleGames=[
+  {in:['2','4','6','8','10'],  out:['1','3','5','7','9'],
+   opts:['Even numbers','Numbers over 5','Multiples of 3'], ans:0,
+   exp:'The rule is EVEN NUMBERS! They can all be divided by 2 with nothing left over.'},
+  {in:['🐶','🐱','🐟','🐦','🐘'], out:['🌹','🍎','🚗','🏠','🎸'],
+   opts:['Things that fly','Animals','Things that are big'], ans:1,
+   exp:'The rule is ANIMALS! Every IN item is a living creature.'},
+  {in:['3','6','9','12','15'], out:['2','5','7','10','13'],
+   opts:['Numbers less than 10','Odd numbers','Multiples of 3'], ans:2,
+   exp:'The rule is MULTIPLES OF 3! Count by 3s: 3, 6, 9, 12, 15…'},
+  {in:['🌞','🔥','🌶️','☕','🧨'], out:['🧊','❄️','🏔️','🌊','🍦'],
+   opts:['Things that are red','HOT things','Things you eat'], ans:1,
+   exp:'The rule is HOT things! The IN group is hot or warm; the OUT group is cold or cool.'},
+  {in:['🔺','🔻','🏔️','🎄','🍕'], out:['🟦','⭕','🌍','🍩','⚽'],
+   opts:['Things that are green','Things with pointy corners','Things you can eat'], ans:1,
+   exp:'The rule is TRIANGLES / pointy corners! Squares and circles have no sharp points.'},
+  {in:['100','50','25','10','5'], out:['3','7','11','13','17'],
+   opts:['Numbers ending in 0 or 5','Numbers over 10','Prime numbers'], ans:0,
+   exp:'The rule is numbers ending in 0 or 5! These can all be divided by 5.'},
+];
+let ruleIdx=0, ruleScoreVal=0;
+
+function showRule(){
+  if(ruleIdx>=ruleGames.length){ endRule(); return; }
+  const g=ruleGames[ruleIdx];
+  document.getElementById('ruleNum').textContent=ruleIdx+1;
+  document.getElementById('ruleScore').textContent=ruleScoreVal;
+  document.getElementById('ruleResult').className='result-box';
+  const chip=s=>`<span style="background:#fff;border-radius:8px;padding:6px 10px;font-weight:700;font-size:1.05rem;border:2px solid rgba(0,0,0,.08)">${s}</span>`;
+  document.getElementById('ruleIn').innerHTML=g.in.map(chip).join('');
+  document.getElementById('ruleOut').innerHTML=g.out.map(chip).join('');
+  document.getElementById('ruleOpts').innerHTML=g.opts.map((opt,i)=>
+    `<button onclick="answerRule(this,${i},${g.ans})"
+      style="padding:12px 18px;border-radius:12px;background:#F3F4F6;border:3px solid transparent;
+             cursor:pointer;font-family:Nunito,sans-serif;font-size:.95rem;font-weight:700;
+             text-align:left;transition:all .2s;" id="ruleOpt${i}"
+      onmouseover="this.style.borderColor='#34D399';this.style.background='#ECFDF5'"
+      onmouseout="if(!this.disabled){this.style.borderColor='transparent';this.style.background='#F3F4F6'}"
+    >${String.fromCharCode(65+i)}) ${opt}</button>`
+  ).join('');
+}
+function answerRule(btn,chosen,correct){
+  document.querySelectorAll('#ruleOpts button').forEach(b=>b.disabled=true);
+  const g=ruleGames[ruleIdx];
+  const res=document.getElementById('ruleResult');
+  if(chosen===correct){
+    btn.style.cssText+=';border-color:#34D399;background:#D1FAE5';
+    res.className='result-box show ok';
+    res.innerHTML=`<span class="r-emoji">🧐</span><span class="r-txt">${g.exp}</span>`;
+    ruleScoreVal++; beep('correct');
+  } else {
+    btn.style.cssText+=';border-color:#FF6B6B;background:#FEE2E2';
+    document.getElementById('ruleOpt'+correct).style.cssText+=';border-color:#34D399;background:#D1FAE5';
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">💡</span><span class="r-txt">${g.exp}</span>`;
+    beep('wrong');
+  }
+  ruleIdx++;
+  setTimeout(showRule,2000);
+}
+function endRule(){
+  document.getElementById('ruleGame').style.display='none';
+  document.getElementById('ruleDone').style.display='block';
+  const s=ruleScoreVal>=6?3:ruleScoreVal>=4?2:ruleScoreVal>=2?1:0;
+  document.getElementById('ruleDoneEmoji').textContent=s>=3?'🧐':s>=2?'🌟':'💪';
+  document.getElementById('ruleDoneMsg').textContent=`${ruleScoreVal}/6 correct! ${s>=3?'Rule Detective! You spotted every pattern! 🧐':s>=2?'Great logical thinking!':'Keep looking for what the IN group shares!'}`;
+  if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
+}
+function resetRule(){
+  ruleIdx=0; ruleScoreVal=0;
+  document.getElementById('ruleGame').style.display='block';
+  document.getElementById('ruleDone').style.display='none';
+  showRule();
+}
+showRule();
+
+// ══ STEP BY STEP ══
+const stepProcesses=[
+  {title:'Making a Sandwich 🥪',
+   steps:['Take 2 slices of bread out of the bag','Spread butter or sauce on the bread','Add your filling (cheese, ham, etc.)','Press the 2 slices together','Cut the sandwich in half and eat!']},
+  {title:'Growing a Plant 🌱',
+   steps:['Fill a pot with soil','Poke a small hole in the soil','Drop a seed into the hole','Cover the seed with soil','Water it gently and put it in sunlight']},
+  {title:'Getting Ready for School 🎒',
+   steps:['Wake up and get out of bed','Wash your face and brush your teeth','Get dressed in your clothes','Eat a healthy breakfast','Pack your school bag and head out!']},
+  {title:'Making Hot Chocolate ☕',
+   steps:['Pour milk into a mug','Heat the milk in a microwave for 90 seconds','Add 2 spoons of hot chocolate powder','Stir well until the powder dissolves','Top with marshmallows and enjoy!']},
+];
+let stepsIdx=0, stepsScoreVal=0, stepsClickedCount=0;
+
+function renderSteps(){
+  if(stepsIdx>=stepProcesses.length){ endSteps(); return; }
+  const proc=stepProcesses[stepsIdx];
+  stepsClickedCount=0;
+  const shuffled=[...proc.steps.map((s,i)=>({s,i}))].sort(()=>Math.random()-.5);
+  document.getElementById('stepsNum').textContent=stepsIdx+1;
+  document.getElementById('stepsScore').textContent=stepsScoreVal;
+  document.getElementById('stepsTitle').textContent=proc.title;
+  document.getElementById('stepsResult').className='result-box';
+  document.getElementById('stepsProgress').innerHTML=proc.steps.map((_,i)=>
+    `<span id="sp${i}" style="width:28px;height:28px;border-radius:50%;background:#E5E7EB;border:2px solid #D1D5DB;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#9CA3AF">${i+1}</span>`
+  ).join('');
+  document.getElementById('stepsItems').innerHTML=shuffled.map(({s,i})=>
+    `<div id="step${i}" onclick="clickStep(this,${i})"
+      style="padding:13px 16px;border-radius:12px;background:#F3F4F6;border:3px solid transparent;
+             cursor:pointer;font-family:Nunito,sans-serif;font-size:.93rem;font-weight:700;
+             display:flex;align-items:center;gap:12px;transition:all .2s;"
+      onmouseover="if(!this.classList.contains('done')){this.style.borderColor='#34D399';this.style.background='#ECFDF5';}"
+      onmouseout="if(!this.classList.contains('done')){this.style.borderColor='transparent';this.style.background='#F3F4F6';}"
+    >
+      <span style="width:26px;height:26px;border-radius:50%;background:#E5E7EB;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;color:#6B7280;flex-shrink:0;font-weight:700" id="stepBadge${i}">?</span>
+      ${s}
+    </div>`
+  ).join('');
+}
+function clickStep(el,idx){
+  if(el.classList.contains('done')) return;
+  const proc=stepProcesses[stepsIdx];
+  const res=document.getElementById('stepsResult');
+  if(idx===stepsClickedCount){
+    stepsClickedCount++;
+    el.classList.add('done');
+    el.style.borderColor='#34D399'; el.style.background='#D1FAE5'; el.onclick=null;
+    el.onmouseover=null; el.onmouseout=null;
+    document.getElementById('stepBadge'+idx).textContent=stepsClickedCount;
+    document.getElementById('stepBadge'+idx).style.cssText='width:26px;height:26px;border-radius:50%;background:#34D399;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;color:#fff;flex-shrink:0;font-weight:700';
+    const sp=document.getElementById('sp'+(stepsClickedCount-1));
+    if(sp){ sp.style.background='#34D399'; sp.style.borderColor='#059669'; sp.style.color='#fff'; }
+    beep('pop');
+    if(stepsClickedCount===proc.steps.length){
+      res.className='result-box show ok';
+      res.innerHTML=`<span class="r-emoji">🎉</span><span class="r-txt">Perfect order! You got all ${proc.steps.length} steps right!</span>`;
+      stepsScoreVal++; addStars(1,'logic'); beep('correct');
+      stepsIdx++;
+      setTimeout(renderSteps,1800);
+    } else {
+      res.className='result-box show ok';
+      res.innerHTML=`<span class="r-emoji">✅</span><span class="r-txt">Step ${stepsClickedCount} correct! Find step ${stepsClickedCount+1}…</span>`;
+    }
+  } else {
+    el.style.borderColor='#FF6B6B'; el.style.background='#FEE2E2';
+    res.className='result-box show err';
+    res.innerHTML=`<span class="r-emoji">❌</span><span class="r-txt">That's not step ${stepsClickedCount+1}! Think — what comes FIRST?</span>`;
+    beep('wrong');
+    setTimeout(()=>{
+      if(!el.classList.contains('done')){ el.style.borderColor='transparent'; el.style.background='#F3F4F6'; }
+      res.className='result-box';
+    },900);
+  }
+}
+function endSteps(){
+  document.getElementById('stepsGame').style.display='none';
+  document.getElementById('stepsDone').style.display='block';
+  const s=stepsScoreVal>=4?3:stepsScoreVal>=3?2:stepsScoreVal>=1?1:0;
+  document.getElementById('stepsDoneEmoji').textContent=s>=3?'📋':s>=2?'🌟':'💪';
+  document.getElementById('stepsDoneMsg').textContent=`${stepsScoreVal}/4 correct! ${s>=3?'Master Planner! You know exactly what comes first! 📋':s>=2?'Great sequential thinking!':'Think step-by-step — what happens first?'}`;
+  if(s>0){ addStars(s,'logic'); if(s>=2) confetti(); }
+}
+function resetSteps(){
+  stepsIdx=0; stepsScoreVal=0;
+  document.getElementById('stepsGame').style.display='block';
+  document.getElementById('stepsDone').style.display='none';
+  renderSteps();
+}
+renderSteps();
 </script>
 </body>
 </html>
